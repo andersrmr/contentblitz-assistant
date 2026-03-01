@@ -10,9 +10,9 @@ class Source(BaseModel):
 
 
 class Citation(BaseModel):
-    source_title: str
-    source_url: str
+    url: str
     supporting_claim: str
+    source_title: str = ""
 
 
 class ResearchPacket(BaseModel):

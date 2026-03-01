@@ -11,3 +11,5 @@ class AppState(TypedDict, total=False):
     draft: dict[str, Any]
     quality_report: dict[str, Any]
     rewrite_count: int
+    errors: list[str]
+    meta: dict[str, Any]

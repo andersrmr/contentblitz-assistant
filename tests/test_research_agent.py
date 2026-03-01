@@ -8,6 +8,7 @@ if str(SRC) not in sys.path:
 
 from agents.research import research_node
 from app.models import ResearchPacket
+from integrations.llm_openai import LLMError, OpenAIClient
 from integrations.serp import SerpClient
 
 
@@ -26,7 +27,11 @@ def test_research_node_builds_valid_deduped_packet(monkeypatch):
             },
         ]
 
+    def fake_complete_json(self, system: str, user: str, temperature: float = 0.0, max_retries: int = 1):
+        raise LLMError("forced fallback")
+
     monkeypatch.setattr(SerpClient, "search", fake_search)
+    monkeypatch.setattr(OpenAIClient, "complete_json", fake_complete_json)
 
     result = research_node({"user_query": "AI content marketing"})
 
@@ -35,3 +40,5 @@ def test_research_node_builds_valid_deduped_packet(monkeypatch):
     assert len(packet.search_queries) >= 2
     assert len(packet.sources) == 3
     assert len({source.url for source in packet.sources}) == len(packet.sources)
+    assert result["meta"]["research_fallback"] == "deterministic_placeholders"
+    assert result["errors"]

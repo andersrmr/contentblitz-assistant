@@ -28,9 +28,9 @@ def test_research_packet_model_round_trip():
             "stats_or_quotes": [],
             "citations": [
                 {
-                    "source_title": "Source one",
-                    "source_url": "https://example.com/source-one",
+                    "url": "https://example.com/source-one",
                     "supporting_claim": "Claim one",
+                    "source_title": "Source one",
                 }
             ],
         }

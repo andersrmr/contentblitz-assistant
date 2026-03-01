@@ -7,6 +7,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from agents.router import router_node
+from integrations.llm_openai import OpenAIClient
 from integrations.serp import SerpClient
 from workflow.graph import content_marketing_graph
 
@@ -32,7 +33,21 @@ def test_graph_runs_through_quality_pass(monkeypatch):
             },
         ]
 
+    def fake_complete_json(self, system: str, user: str, temperature: float = 0.0, max_retries: int = 1):
+        return {
+            "key_findings": ["LLM finding"],
+            "angles": ["LLM angle"],
+            "stats_or_quotes": [],
+            "citations": [
+                {
+                    "url": "https://example.com/source-1",
+                    "supporting_claim": "Claim from source 1",
+                }
+            ],
+        }
+
     monkeypatch.setattr(SerpClient, "search", fake_search)
+    monkeypatch.setattr(OpenAIClient, "complete_json", fake_complete_json)
     result = content_marketing_graph.invoke(
         {"topic": "AI content marketing", "audience": "B2B marketers"}
     )
