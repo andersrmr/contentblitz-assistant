@@ -7,7 +7,7 @@ from agents.router import router_node
 from agents.strategist import strategist_node
 from agents.writer_linkedin import writer_linkedin_node
 from app.state import AppState
-from workflow.routing import route_after_quality
+from workflow.routing import route_after_quality, route_after_router
 
 
 def build_graph():
@@ -20,7 +20,11 @@ def build_graph():
     graph.add_node("rewrite", rewrite_node)
 
     graph.add_edge(START, "router")
-    graph.add_edge("router", "research")
+    graph.add_conditional_edges(
+        "router",
+        route_after_router,
+        {"research": "research", "rewrite": "rewrite"},
+    )
     graph.add_edge("research", "strategist")
     graph.add_edge("strategist", "writer")
     graph.add_edge("writer", "quality")

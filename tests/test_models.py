@@ -63,11 +63,11 @@ def test_draft_and_quality_models_validate():
     )
     report = QualityReport.model_validate(
         {
-            "passed": True,
-            "score": 100,
-            "checks": {"min_length": True, "cta_present": True},
-            "feedback": [],
+            "status": "pass",
+            "reasons": [],
+            "fixes": [],
+            "checks": {"cta_present": True},
         }
     )
     assert draft.cta == "Book a call."
-    assert report.score == 100
+    assert report.status == "pass"

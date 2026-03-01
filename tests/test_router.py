@@ -18,6 +18,11 @@ def test_router_sets_linkedin_route():
     assert result["rewrite_count"] == 0
 
 
+def test_router_sets_revise_route():
+    result = router_node({"intent": "revise"})
+    assert result["route"] == "revise"
+
+
 def test_graph_runs_through_quality_pass(monkeypatch):
     def fake_search(self, query: str, num_results: int = 10, timeout_s: int = 20, hl: str = "en", gl: str = "us"):
         return [
@@ -86,4 +91,4 @@ def test_graph_runs_through_quality_pass(monkeypatch):
         {"topic": "AI content marketing", "audience": "B2B marketers"}
     )
     assert result["route"] == "linkedin_post"
-    assert result["quality_report"]["passed"] is True
+    assert result["quality_report"]["status"] == "pass"

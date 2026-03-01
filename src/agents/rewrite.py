@@ -1,25 +1,86 @@
-from app.models import ContentBrief, Draft
+import json
+from typing import Any
+
+from app.models import ContentBrief, Citation, Draft, QualityReport, ResearchPacket
+from app.prompts import REWRITE_SYSTEM, REWRITE_USER_TEMPLATE
 from app.state import AppState
+from integrations.llm_openai import LLMError, OpenAIClient
 
 
 def rewrite_node(state: AppState) -> dict:
     draft = Draft.model_validate(state["draft"])
-    brief = ContentBrief.model_validate(state["content_brief"])
-    body = draft.body
-    if len(body) < 80:
-        body = (
-            f"{body} This revised version adds enough detail to explain the process clearly "
-            "and make the next action obvious for the reader."
-        )
-    rewritten_data = {
+    brief_data = state.get("brief") or state.get("content_brief")
+    if brief_data is None:
+        raise ValueError("rewrite_node requires 'brief' or 'content_brief' in state")
+    brief = ContentBrief.model_validate(brief_data)
+    research = ResearchPacket.model_validate(state["research"])
+    report = QualityReport.model_validate(state["quality_report"])
+
+    fallback_body = draft.body.strip()
+    constraints = state.get("constraints", {})
+    max_words = constraints.get("max_words") if isinstance(constraints, dict) else None
+    if draft.cta and draft.cta not in fallback_body:
+        fallback_body = f"{fallback_body}\n\n{draft.cta}".strip()
+    if len(fallback_body.split("\n\n")) < 3:
+        fallback_body = fallback_body.replace("\n\n", "\n").strip()
+        fallback_body = f"{fallback_body}\n\n{brief.angle}\n\n{draft.cta}".strip()
+    if max_words is not None:
+        words = fallback_body.split()
+        if len(words) > int(max_words):
+            fallback_body = " ".join(words[: int(max_words)]).strip()
+            if draft.cta and draft.cta not in fallback_body:
+                fallback_body = f"{fallback_body}\n\n{draft.cta}".strip()
+
+    fallback_data = {
         "channel": draft.channel,
-        "headline": draft.headline,
-        "body": body,
-        "cta": brief.cta,
-        "citations": [citation.model_dump() for citation in draft.citations],
+        "headline": " ".join(draft.headline.split()[:12]),
+        "body": fallback_body,
+        "cta": draft.cta or brief.cta,
+        "citations": [citation.model_dump() for citation in research.citations[:3]],
     }
-    rewritten = Draft.model_validate(rewritten_data)
-    return {
+    errors = list(state.get("errors", []))
+    meta = dict(state.get("meta", {}))
+
+    try:
+        llm_data = OpenAIClient().complete_json(
+            system=REWRITE_SYSTEM,
+            user=REWRITE_USER_TEMPLATE.format(
+                draft=json.dumps(draft.model_dump(), indent=2),
+                fixes="\n".join(f"- {fix}" for fix in report.fixes),
+                revision_request=state.get("revision_request", ""),
+                citations=json.dumps(
+                    [citation.model_dump() for citation in research.citations],
+                    indent=2,
+                ),
+            ),
+        )
+        if isinstance(llm_data, dict):
+            fallback_data = {**fallback_data, **llm_data}
+    except LLMError as exc:
+        errors.append(f"Rewrite fallback used: {exc}")
+        meta["writer_fallback"] = "deterministic_rewrite"
+
+    allowed_urls = {citation.url for citation in research.citations}
+    valid_citations = [
+        Citation.model_validate(citation).model_dump()
+        for citation in fallback_data.get("citations", [])
+        if citation.get("url", "") in allowed_urls
+    ]
+    rewritten = Draft.model_validate(
+        {
+            "channel": fallback_data.get("channel", draft.channel),
+            "headline": fallback_data.get("headline", draft.headline),
+            "body": fallback_data.get("body", fallback_body),
+            "cta": fallback_data.get("cta", draft.cta or brief.cta),
+            "citations": valid_citations,
+        }
+    )
+    result: dict[str, Any] = {
         "draft": rewritten.model_dump(),
         "rewrite_count": state.get("rewrite_count", 0) + 1,
     }
+    if errors:
+        result["errors"] = errors
+    if meta:
+        result["meta"] = meta
+    return result

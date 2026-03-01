@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -44,7 +46,7 @@ class Draft(BaseModel):
 
 
 class QualityReport(BaseModel):
-    passed: bool
-    score: int
-    checks: dict[str, bool]
-    feedback: list[str] = Field(default_factory=list)
+    status: str
+    reasons: list[str] = Field(default_factory=list)
+    fixes: list[str] = Field(default_factory=list)
+    checks: dict[str, Any] = Field(default_factory=dict)
