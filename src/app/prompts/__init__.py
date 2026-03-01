@@ -3,7 +3,7 @@ from app.prompts.research import RESEARCH_SYSTEM, RESEARCH_USER_TEMPLATE
 from app.prompts.rewrite import REWRITE_PROMPT
 from app.prompts.router import ROUTER_PROMPT
 from app.prompts.strategist import STRATEGIST_SYSTEM, STRATEGIST_USER_TEMPLATE
-from app.prompts.writer_linkedin import WRITER_LINKEDIN_PROMPT
+from app.prompts.writer_linkedin import WRITER_SYSTEM, WRITER_USER_TEMPLATE
 
 __all__ = [
     "QUALITY_PROMPT",
@@ -13,5 +13,6 @@ __all__ = [
     "ROUTER_PROMPT",
     "STRATEGIST_SYSTEM",
     "STRATEGIST_USER_TEMPLATE",
-    "WRITER_LINKEDIN_PROMPT",
+    "WRITER_SYSTEM",
+    "WRITER_USER_TEMPLATE",
 ]

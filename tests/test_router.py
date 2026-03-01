@@ -50,6 +50,24 @@ def test_graph_runs_through_quality_pass(monkeypatch):
                 ],
                 "cta": "Book a short strategy call to compare approaches.",
             }
+        if "linkedin content writer" in system.lower():
+            return {
+                "channel": "linkedin",
+                "headline": "Ship more consistent content",
+                "body": (
+                    "Teams often stall because their process is unclear.\n\n"
+                    "A stronger workflow reduces delays and improves quality.\n\n"
+                    "Book a short strategy call to compare approaches."
+                ),
+                "cta": "Book a short strategy call to compare approaches.",
+                "citations": [
+                    {
+                        "url": "https://example.com/source-1",
+                        "supporting_claim": "Claim from source 1",
+                        "source_title": "AI content marketing source 1",
+                    }
+                ],
+            }
         return {
             "key_findings": ["LLM finding"],
             "angles": ["LLM angle"],
