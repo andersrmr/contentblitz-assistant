@@ -17,8 +17,7 @@ def _init_session() -> None:
         st.session_state.last_state = None
 
 
-def _render_result(result: dict) -> None:
-    st.sidebar.write(sorted(result.keys()))
+def _render_result(result: dict[str, Any]) -> None:
     tabs = st.tabs(["Research", "Brief", "Draft", "Quality"])
     with tabs[0]:
         st.json(result.get("research", {}))
