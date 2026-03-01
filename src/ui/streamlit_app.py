@@ -22,8 +22,7 @@ def _render_result(result: dict[str, Any]) -> None:
     with tabs[0]:
         st.json(result.get("research", {}))
     with tabs[1]:
-        # your graph currently returns content_brief (and maybe brief too)
-        st.json(result.get("brief", result.get("content_brief", {})))
+        st.json(result.get("brief", {}))
     with tabs[2]:
         st.json(result.get("draft", {}))
     with tabs[3]:

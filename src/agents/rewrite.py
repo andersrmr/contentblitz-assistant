@@ -48,9 +48,9 @@ def _post_process_draft_data(draft_data: dict[str, Any]) -> dict[str, Any]:
 
 def rewrite_node(state: AppState) -> dict:
     draft = Draft.model_validate(state["draft"])
-    brief_data = state.get("brief") or state.get("content_brief")
+    brief_data = state.get("brief")
     if brief_data is None:
-        raise ValueError("rewrite_node requires 'brief' or 'content_brief' in state")
+        raise ValueError("rewrite_node requires 'brief' in state")
     brief = ContentBrief.model_validate(brief_data)
     research = ResearchPacket.model_validate(state["research"])
     report = QualityReport.model_validate(state["quality_report"])

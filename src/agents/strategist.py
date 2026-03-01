@@ -40,10 +40,7 @@ def strategist_node(state: AppState) -> dict:
         meta["strategist_fallback"] = "deterministic_brief"
 
     brief = ContentBrief.model_validate(fallback_data)
-    result: dict[str, Any] = {
-        "brief": brief.model_dump(),
-        "content_brief": brief.model_dump(),
-    }
+    result: dict[str, Any] = {"brief": brief.model_dump()}
     if errors:
         result["errors"] = errors
     if meta:
