@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+from typing import Any, cast
 
 import streamlit as st
 
@@ -7,6 +8,7 @@ SRC_ROOT = Path(__file__).resolve().parents[1]
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
+from app.state import AppState
 from workflow.graph import content_marketing_graph
 
 
@@ -16,6 +18,7 @@ def _init_session() -> None:
 
 
 def _render_result(result: dict) -> None:
+    st.sidebar.write(sorted(result.keys()))
     tabs = st.tabs(["Research", "Brief", "Draft", "Quality"])
     with tabs[0]:
         st.json(result.get("research", {}))
@@ -50,16 +53,16 @@ def run() -> None:
 
     # CREATE: start fresh for this run (don’t carry last draft unless you want to)
     if run_new:
-        state = {
+        state: AppState = {
             "topic": topic,
             "audience": audience,
             "intent": "create",
-            "revision_request": None,
-            "iteration": 0,
+            "revision_request": "",
+            "rewrite_count": 0,
             "errors": [],
             "meta": {},
         }
-        result = content_marketing_graph.invoke(state)
+        result = content_marketing_graph.invoke(cast(AppState, state))
         st.session_state.last_state = result
         _render_result(result)
 
@@ -71,18 +74,20 @@ def run() -> None:
             return
 
         # Carry forward prior artifacts so rewrite has context
-        state = dict(prev)
-        state.update(
+        state = cast(
+            AppState,
             {
+                **dict(cast(dict[str, Any], prev)),
                 "topic": topic,
                 "audience": audience,
                 "intent": "revise",
-                "revision_request": revision_request.strip() or "Make it clearer and tighter.",
-                "iteration": 0,
-            }
+                "revision_request": revision_request.strip()
+                or "Make it clearer and tighter.",
+                "rewrite_count": 0,
+            },
         )
 
-        result = content_marketing_graph.invoke(state)
+        result = content_marketing_graph.invoke(cast(AppState, state))
         st.session_state.last_state = result
         _render_result(result)
 
