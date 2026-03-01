@@ -16,11 +16,7 @@ def test_rewrite_node_returns_valid_draft(monkeypatch):
         return {
             "channel": "linkedin",
             "headline": "Refined workflow for better output",
-            "body": (
-                "A tighter process helps teams move faster.\n\n"
-                "It also keeps messaging more consistent.\n\n"
-                "Book a short strategy call today."
-            ),
+            "body": "A tighter process helps teams move faster. It also keeps messaging more consistent.",
             "cta": "Book a short strategy call today.",
             "citations": [
                 {
@@ -79,4 +75,6 @@ def test_rewrite_node_returns_valid_draft(monkeypatch):
     draft = Draft.model_validate(result["draft"])
     allowed_urls = {"https://example.com/source-one"}
     assert all(citation.url in allowed_urls for citation in draft.citations)
+    assert draft.cta in draft.body
+    assert len([segment for segment in draft.body.split("\n\n") if segment.strip()]) >= 3
     assert result["rewrite_count"] == 1

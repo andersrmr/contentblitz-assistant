@@ -7,6 +7,45 @@ from app.state import AppState
 from integrations.llm_openai import LLMError, OpenAIClient
 
 
+def _reflow_linkedin_paragraphs(body: str) -> str:
+    normalized = body.replace("\n\n", " ").replace("\n", " ").strip()
+    if not normalized:
+        return body
+
+    sentences = [segment.strip() for segment in normalized.split(". ") if segment.strip()]
+    if len(sentences) >= 3:
+        return "\n\n".join(sentences)
+
+    paragraphs: list[str] = []
+    current: list[str] = []
+    for sentence in sentences:
+        current.append(sentence)
+        if len(current) == 2:
+            paragraphs.append(". ".join(current).strip())
+            current = []
+    if current:
+        paragraphs.append(". ".join(current).strip())
+
+    if len(paragraphs) >= 3:
+        return "\n\n".join(paragraphs)
+    return body
+
+
+def _post_process_draft_data(draft_data: dict[str, Any]) -> dict[str, Any]:
+    body = str(draft_data.get("body", "")).strip()
+    cta = str(draft_data.get("cta", "")).strip()
+
+    if cta and cta not in body:
+        body = f"{body}\n\n{cta}".strip()
+
+    paragraphs = [segment for segment in body.split("\n\n") if segment.strip()]
+    if len(paragraphs) < 3:
+        body = _reflow_linkedin_paragraphs(body)
+
+    draft_data["body"] = body
+    return draft_data
+
+
 def rewrite_node(state: AppState) -> dict:
     draft = Draft.model_validate(state["draft"])
     brief_data = state.get("brief") or state.get("content_brief")
@@ -66,7 +105,7 @@ def rewrite_node(state: AppState) -> dict:
         for citation in fallback_data.get("citations", [])
         if citation.get("url", "") in allowed_urls
     ]
-    rewritten = Draft.model_validate(
+    draft_data = _post_process_draft_data(
         {
             "channel": fallback_data.get("channel", draft.channel),
             "headline": fallback_data.get("headline", draft.headline),
@@ -75,6 +114,7 @@ def rewrite_node(state: AppState) -> dict:
             "citations": valid_citations,
         }
     )
+    rewritten = Draft.model_validate(draft_data)
     result: dict[str, Any] = {
         "draft": rewritten.model_dump(),
         "rewrite_count": state.get("rewrite_count", 0) + 1,
