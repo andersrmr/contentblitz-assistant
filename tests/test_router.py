@@ -34,6 +34,22 @@ def test_graph_runs_through_quality_pass(monkeypatch):
         ]
 
     def fake_complete_json(self, system: str, user: str, temperature: float = 0.0, max_retries: int = 1):
+        if "content strategist" in system.lower():
+            return {
+                "topic": "AI content marketing",
+                "audience": "B2B marketers",
+                "objective": "Educate",
+                "channel": "linkedin",
+                "angle": "Show how a structured workflow improves execution",
+                "outline": [
+                    "Open with the operational problem",
+                    "Explain how research reduces ambiguity",
+                    "Show how strategy creates consistency",
+                    "Connect the workflow to better publishing",
+                    "Invite readers to compare approaches",
+                ],
+                "cta": "Book a short strategy call to compare approaches.",
+            }
         return {
             "key_findings": ["LLM finding"],
             "angles": ["LLM angle"],
