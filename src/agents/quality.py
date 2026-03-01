@@ -7,7 +7,7 @@ def quality_node(state: AppState) -> dict:
     settings = Settings()
     draft = Draft.model_validate(state["draft"])
     body_text = f"{draft.headline} {draft.body} {draft.cta}".strip()
-    has_min_length = len(body_text) >= settings.min_draft_length
+    has_min_length = len(body_text) >= settings.MIN_DRAFT_LENGTH
     has_cta = "call" in draft.cta.lower() or "book" in draft.cta.lower()
     checks = {"min_length": has_min_length, "cta_present": has_cta}
     feedback = []

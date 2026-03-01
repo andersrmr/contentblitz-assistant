@@ -2,23 +2,26 @@ from pydantic import BaseModel, Field
 
 
 class Source(BaseModel):
-    title: str
+    title: str = ""
     url: str
-    summary: str
+    snippet: str = ""
+    retrieved_at: str
+    source_type: str = "serp"
 
 
 class Citation(BaseModel):
     source_title: str
     source_url: str
-    note: str
+    supporting_claim: str
 
 
 class ResearchPacket(BaseModel):
-    topic: str
-    audience: str
-    summary: str
-    key_points: list[str] = Field(default_factory=list)
+    user_query: str
+    search_queries: list[str] = Field(default_factory=list)
     sources: list[Source] = Field(default_factory=list)
+    key_findings: list[str] = Field(default_factory=list)
+    angles: list[str] = Field(default_factory=list)
+    stats_or_quotes: list[str] = Field(default_factory=list)
     citations: list[Citation] = Field(default_factory=list)
 
 

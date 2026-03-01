@@ -21,7 +21,7 @@ def run() -> None:
         result = content_marketing_graph.invoke({"topic": topic, "audience": audience})
         tabs = st.tabs(["Research", "Brief", "Draft", "Quality"])
         with tabs[0]:
-            st.json(result.get("research_packet", {}))
+            st.json(result.get("research", {}))
         with tabs[1]:
             st.json(result.get("content_brief", {}))
         with tabs[2]:

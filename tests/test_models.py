@@ -12,28 +12,31 @@ from app.models import ContentBrief, Draft, QualityReport, ResearchPacket
 def test_research_packet_model_round_trip():
     packet = ResearchPacket.model_validate(
         {
-            "topic": "AI content marketing",
-            "audience": "B2B marketers",
-            "summary": "Stable research summary.",
-            "key_points": ["One", "Two"],
+            "user_query": "AI content marketing",
+            "search_queries": ["AI content marketing", "AI content marketing best practices"],
             "sources": [
                 {
                     "title": "Source one",
                     "url": "https://example.com/source-one",
-                    "summary": "Summary one",
+                    "snippet": "Summary one",
+                    "retrieved_at": "2025-01-01T00:00:00+00:00",
+                    "source_type": "serp",
                 }
             ],
+            "key_findings": ["One", "Two"],
+            "angles": ["Angle one"],
+            "stats_or_quotes": [],
             "citations": [
                 {
                     "source_title": "Source one",
                     "source_url": "https://example.com/source-one",
-                    "note": "Note one",
+                    "supporting_claim": "Claim one",
                 }
             ],
         }
     )
     dumped = packet.model_dump()
-    assert dumped["topic"] == "AI content marketing"
+    assert dumped["user_query"] == "AI content marketing"
     assert dumped["sources"][0]["title"] == "Source one"
 
 

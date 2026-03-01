@@ -2,17 +2,19 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "AI Content Marketing Assistant"
-    environment: str = "development"
-    default_channel: str = "linkedin"
-    min_draft_length: int = 80
-    openai_model: str = "gpt-4.1-mini"
-    serp_api_key: str = ""
-    openai_api_key: str = ""
+    APP_NAME: str = "AI Content Marketing Assistant"
+    ENVIRONMENT: str = "development"
+    DEFAULT_PLATFORM: str = "linkedin"
+    DEFAULT_TONE: str = "professional"
+    MAX_ITERATIONS: int = 2
+    MIN_DRAFT_LENGTH: int = 80
+    OPENAI_MODEL: str = "gpt-4"
+    SERPAPI_API_KEY: str = ""
+    OPENAI_API_KEY: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        env_prefix="CONTENTBLITZ_",
+        env_prefix="",
         extra="ignore",
     )
