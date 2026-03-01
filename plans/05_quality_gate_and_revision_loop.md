@@ -29,7 +29,11 @@ Strengthen the quality gate and make the revision loop reliable, while keeping b
 - The loop runs up to `MAX_ITERATIONS`
 - `uv run pytest -q` passes offline
 
-## 5) Commands
+## 5) Notes
+
+- Post-processing enforces CTA-in-body and LinkedIn skimmability deterministically after rewrite.
+
+## 6) Commands
 
 - `uv run pytest -q`
 - `uv run streamlit run src/ui/streamlit_app.py`
