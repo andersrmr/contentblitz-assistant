@@ -102,7 +102,7 @@ def research_node(state: AppState) -> dict:
             ),
         )
         if isinstance(llm_payload, dict):
-            payload = llm_payload
+            payload = {**payload, **llm_payload}
     except LLMError as exc:
         errors.append(f"Research summarization fallback used: {exc}")
         meta["research_fallback"] = "deterministic_placeholders"

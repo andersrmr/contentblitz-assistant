@@ -18,3 +18,6 @@ class Settings(BaseSettings):
         env_prefix="",
         extra="ignore",
     )
+
+
+settings = Settings()

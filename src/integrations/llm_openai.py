@@ -2,7 +2,7 @@ import json
 
 from openai import OpenAI
 
-from app.config import Settings
+from app.config import settings
 
 
 class LLMError(RuntimeError):
@@ -11,7 +11,6 @@ class LLMError(RuntimeError):
 
 class OpenAIClient:
     def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
-        settings = Settings()
         self.api_key = api_key if api_key is not None else settings.OPENAI_API_KEY
         self.model = model if model is not None else settings.OPENAI_MODEL
         self._client = OpenAI(api_key=self.api_key) if self.api_key else None
@@ -37,12 +36,15 @@ class OpenAIClient:
             return output_text
 
         output = getattr(response, "output", None) or []
+        text_chunks: list[str] = []
         for item in output:
             content = getattr(item, "content", None) or []
             for part in content:
                 text = getattr(part, "text", None)
                 if isinstance(text, str) and text.strip():
-                    return text
+                    text_chunks.append(text)
+        if text_chunks:
+            return "".join(text_chunks)
         raise LLMError("OpenAI response did not contain text.")
 
     def _request_text(self, system: str, user: str, temperature: float) -> str:
