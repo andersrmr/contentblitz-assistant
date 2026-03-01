@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from typing import Any
 
 from app.prompts import RESEARCH_SYSTEM, RESEARCH_USER_TEMPLATE
 from app.models import Citation, ResearchPacket, Source
@@ -133,7 +134,7 @@ def research_node(state: AppState) -> dict:
         "citations": [citation.model_dump() for citation in citations],
     }
     packet = ResearchPacket.model_validate(packet_data)
-    result = {"research": packet.model_dump()}
+    result: dict[str, Any] = {"research": packet.model_dump()}
     if errors:
         result["errors"] = errors
     if meta:
