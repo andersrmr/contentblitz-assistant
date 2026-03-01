@@ -8,8 +8,15 @@ from integrations.llm_openai import LLMError, OpenAIClient
 
 
 def writer_linkedin_node(state: AppState) -> dict:
-    research = ResearchPacket.model_validate(state["research"])
-    brief = ContentBrief.model_validate(state["brief"])
+    research_data = state.get("research")
+    if research_data is None:
+        raise ValueError("writer_linkedin_node requires 'research' in state")
+    brief_data = state.get("brief")
+    if brief_data is None:
+        raise ValueError("writer_linkedin_node requires 'brief' in state")
+
+    research = ResearchPacket.model_validate(research_data)
+    brief = ContentBrief.model_validate(brief_data)
     platform = state.get("platform", brief.channel)
     constraints = state.get("constraints", {})
     max_words = constraints.get("max_words") if isinstance(constraints, dict) else None
