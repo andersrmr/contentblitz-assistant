@@ -10,7 +10,11 @@ def route_after_router(state: AppState) -> str:
 
 
 def route_after_quality(state: AppState) -> str:
-    report = QualityReport.model_validate(state["quality_report"])
+    quality_report_data = state.get("quality_report")
+    if quality_report_data is None:
+        raise ValueError("route_after_quality requires 'quality_report' in state")
+
+    report = QualityReport.model_validate(quality_report_data)
     if report.status == "pass":
         return "end"
     if state.get("rewrite_count", 0) >= settings.MAX_ITERATIONS:
