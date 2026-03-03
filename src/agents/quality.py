@@ -3,8 +3,15 @@ from app.state import AppState
 
 
 def quality_node(state: AppState) -> dict:
-    draft = Draft.model_validate(state["draft"])
-    research = ResearchPacket.model_validate(state["research"])
+    draft_data = state.get("draft")
+    if draft_data is None:
+        raise ValueError("quality_node requires 'draft' in state")
+    research_data = state.get("research")
+    if research_data is None:
+        raise ValueError("quality_node requires 'research' in state")
+
+    draft = Draft.model_validate(draft_data)
+    research = ResearchPacket.model_validate(research_data)
     constraints = state.get("constraints", {})
     max_words = constraints.get("max_words") if isinstance(constraints, dict) else None
 
