@@ -1,83 +1,170 @@
-# AI Content Marketing Assistant (ContentBlitz)
+# AI Content Marketing Assistant
 
-A LangGraph-powered, multi-step assistant that generates high-quality, citation-backed marketing content (optimized for LinkedIn) using:
+## Project Overview
 
-- **Research** (SerpAPI)
-- **Strategy / Brief** (OpenAI, schema-validated)
-- **Draft writing** (OpenAI, schema-validated)
-- **Deterministic quality gate** + **rewrite loop** (OpenAI-backed rewrite + guardrails)
-- **Streamlit UI** to run “Create” and “Revise” workflows
+AI Content Marketing Assistant is a production-style AI engineering project that orchestrates research, strategy, drafting, quality control, and revision through a typed LangGraph workflow. It is built to demonstrate reliable multi-step LLM systems: schema-validated state, deterministic fallbacks, citation-safe content generation, and offline-first tests.
 
-This project is designed as a capstone-style implementation emphasizing:
-- structured state + schema validation (Pydantic)
-- deterministic tests (offline)
-- safe fallbacks when LLM calls fail
-- citation hygiene (no invented URLs)
+The current implementation is optimized for LinkedIn content creation and revision. It combines live research collection through SerpAPI with structured OpenAI Responses API calls for summarization, strategy, writing, and rewriting, while enforcing deterministic quality gates before final output.
 
----
+## Key Features
 
-## Features
+- Multi-step LangGraph workflow for research, strategist, writer, quality, and rewrite stages
+- SerpAPI-backed source discovery with normalization and URL deduplication
+- OpenAI Responses API integrations that enforce JSON outputs for structured agent responses
+- Pydantic model validation for `ResearchPacket`, `ContentBrief`, `Draft`, and `QualityReport`
+- Deterministic quality checks for CTA presence, skimmability, word limits, headline length, and citation usage
+- Safe rewrite loop with fallback behavior and post-processing that preserves citation hygiene
+- Streamlit UI that supports both create and revise workflows
+- Offline, deterministic pytest suite with mocked external integrations
 
-### ✅ Research (SerpAPI)
-- Generates multiple queries from the topic
-- Fetches SERP results via SerpAPI
-- Normalizes and deduplicates sources
-- Produces a schema-validated `ResearchPacket`
+## Architecture Overview
 
-### ✅ Strategist (OpenAI JSON → ContentBrief)
-- Uses research signals to produce a structured content brief:
-  - topic, audience, objective, channel, angle, outline, CTA
-- JSON-only output with schema validation
+The system is modeled as a LangGraph state machine. The default path runs `research -> strategist -> writer -> quality`. If the router receives a revise intent, the graph jumps directly into the rewrite path. If quality fails, the graph loops through rewrite until the draft passes or `MAX_ITERATIONS` is reached.
 
-### ✅ Writer (OpenAI JSON → Draft)
-- Produces a LinkedIn-ready draft:
-  - headline, body, CTA, citations
-- Citations are filtered to **only URLs already present in research**
+```mermaid
+flowchart TD
+    start([START]) --> router[router]
 
-### ✅ Quality Gate (Deterministic)
-Validates the draft with deterministic checks:
-- citations present / used
-- headline length
-- max words (if provided)
-- CTA presence in body
-- LinkedIn skimmability (blank-line-separated paragraphs)
+    router --> router_check{route_after_router}
+    router_check -->|route == revise| rewrite[rewrite]
+    router_check -->|otherwise| research[research]
 
-### ✅ Rewrite Loop (OpenAI + Guardrails)
-- If quality fails, rewrite runs with targeted fixes
-- Deterministic post-processing guarantees:
-  - CTA appears in the body
-  - at least 3 blank-line-separated paragraphs
-- Loop continues until pass or `MAX_ITERATIONS`
+    research --> strategist[strategist]
+    strategist --> writer[writer]
+    writer --> quality[quality]
 
-### ✅ Create vs Revise (Streamlit)
-- **Run new draft**: full pipeline (research → brief → draft → quality/rewrite)
-- **Revise last draft**: rewrite + quality loop using revision instructions
+    rewrite --> quality
 
----
+    quality --> quality_check{route_after_quality}
+    quality_check -->|status == pass| finish([END])
+    quality_check -->|rewrite_count >= MAX_ITERATIONS| finish
+    quality_check -->|status == fail and under limit| rewrite
+```
+
+Workflow stages:
+
+- `research`: queries SerpAPI, normalizes sources, and produces a schema-valid research packet
+- `strategist`: turns research findings into a structured `ContentBrief`
+- `writer`: generates a LinkedIn-ready `Draft` constrained by allowed citations
+- `quality`: applies deterministic heuristics to approve or reject the draft
+- `rewrite`: revises a failing draft using targeted fixes, then loops back into quality
 
 ## Tech Stack
 
-- **Python 3.11**
-- **uv** for env + dependency management
-- **LangGraph** for orchestration + state
-- **OpenAI** (new `OpenAI()` client) for strategist/writer/rewrite
-- **SerpAPI** for web research
-- **Pydantic** for schema validation
-- **Streamlit** for UI
-- **pytest** for deterministic tests (offline by default)
+- `LangGraph` for workflow orchestration and state transitions
+- `OpenAI Responses API` for strategist, writer, research summarization, and rewrite JSON generation
+- `SerpAPI` for external web research
+- `Pydantic` and `pydantic-settings` for schema validation and environment configuration
+- `Streamlit` for the interactive create/revise UI
+- `pytest` for deterministic test coverage
+- `uv` for environment and dependency management
+- Python 3.11
 
----
-
-## Repo Structure
+## Repository Structure
 
 ```text
 .
 ├─ src/
-│  ├─ agents/                 # research, strategist, writer, quality, rewrite, router
-│  ├─ app/                    # config, models, prompts, typed state
-│  ├─ integrations/           # serp + openai client wrappers
-│  ├─ ui/                     # streamlit UI
-│  └─ workflow/               # graph assembly + routing
-├─ tests/                     # offline deterministic unit tests
-├─ plans/                     # numbered implementation plans
-└─ docs/                      # architecture diagram and docs
+│  ├─ agents/         # LangGraph node implementations
+│  ├─ app/            # config, models, prompts, typed state
+│  ├─ integrations/   # OpenAI + SerpAPI client wrappers
+│  ├─ ui/             # Streamlit application
+│  ├─ utils/          # small helper utilities
+│  └─ workflow/       # graph assembly and routing
+├─ tests/             # deterministic offline unit tests
+├─ plans/             # implementation milestone notes
+└─ docs/              # architecture and graph documentation
+```
+
+## Setup Instructions
+
+This repository uses `uv` for dependency management and command execution.
+
+```bash
+uv sync
+```
+
+If you prefer to run without syncing first, `uv run ...` will also resolve and execute commands on demand.
+
+## Environment Variables
+
+Create a `.env` file in the repository root. The application reads settings automatically via `pydantic-settings`.
+
+Required or commonly used variables:
+
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL`
+- `SERPAPI_API_KEY`
+- `MAX_ITERATIONS`
+- `DEFAULT_PLATFORM`
+- `DEFAULT_TONE`
+
+Example:
+
+```env
+OPENAI_API_KEY="your_openai_key"
+OPENAI_MODEL="gpt-4"
+SERPAPI_API_KEY="your_serpapi_key"
+MAX_ITERATIONS=2
+DEFAULT_PLATFORM="linkedin"
+DEFAULT_TONE="professional"
+```
+
+## Running Tests
+
+Run the full deterministic unit test suite:
+
+```bash
+uv run pytest -q
+```
+
+The default suite is designed to run offline. External API calls are mocked in unit tests.
+
+## Running the Streamlit UI
+
+Launch the local UI with:
+
+```bash
+uv run streamlit run src/ui/streamlit_app.py
+```
+
+The app provides a simple interface for generating a new draft or revising the most recent draft.
+
+## Usage
+
+### Create Workflow
+
+Use the `Run new draft` action to execute the full content generation pipeline:
+
+1. Research the topic with SerpAPI
+2. Summarize and structure the findings
+3. Build a strategic brief
+4. Generate a LinkedIn draft
+5. Run the quality gate
+6. Rewrite automatically if needed
+
+### Revise Workflow
+
+Use the `Revise last draft` action to iterate on the existing result:
+
+1. Reuse the prior draft and supporting context
+2. Apply a user-provided revision request
+3. Run the rewrite node
+4. Re-check quality and loop until pass or max iterations
+
+## Design Principles
+
+- Schema validation first: every structured agent output is validated with Pydantic before re-entering graph state
+- Deterministic tests: unit tests mock OpenAI and SerpAPI so the suite is stable and offline
+- Citation safety: generated drafts and rewrites are constrained to citation URLs already present in research
+- Guardrailed fallbacks: if an LLM step fails, deterministic fallback logic keeps the workflow operational
+- Typed state transitions: the LangGraph flow uses a shared `AppState` contract to reduce accidental shape drift
+
+## Future Improvements
+
+- Add support for additional publishing channels beyond LinkedIn
+- Introduce richer research ranking and source scoring
+- Expand quality checks for tone, factual grounding, and formatting
+- Add integration tests gated behind explicit API-key presence
+- Add persistence for past runs, drafts, and revisions
+- Improve the Streamlit UI with editable intermediate artifacts and review controls
