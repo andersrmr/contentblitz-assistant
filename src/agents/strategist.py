@@ -8,7 +8,11 @@ from integrations.llm_openai import LLMError, OpenAIClient
 
 
 def strategist_node(state: AppState) -> dict:
-    research = ResearchPacket.model_validate(state["research"])
+    research_data = state.get("research")
+    if research_data is None:
+        raise ValueError("strategist_node requires 'research' in state")
+
+    research = ResearchPacket.model_validate(research_data)
     topic = state.get("user_query") or state.get("topic", research.user_query)
     platform = state.get("platform", settings.DEFAULT_PLATFORM)
     fallback_data = {
