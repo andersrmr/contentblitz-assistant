@@ -1,4 +1,4 @@
-# Plan 07 — Phase 2 Eval System Scaffold
+# Step 8 - Phase 2 Eval System Scaffold
 
 ## Goal
 
