@@ -1,0 +1,56 @@
+case_id: case_001_create_happy_path
+description: Create flow happy path should pass quality checks without rewrite loops.
+inputs:
+  intent: create
+  topic: AI content marketing workflows
+  user_query: AI content marketing workflows
+  audience: B2B marketing leads
+  platform: linkedin
+  constraints:
+    max_words: 120
+fixtures:
+  serp_fixture:
+    - title: MarketingOps report on workflow consistency
+      url: https://example.com/marketingops-workflow-report
+      snippet: Teams with repeatable processes publish with higher consistency.
+    - title: Content operations benchmark
+      url: https://example.com/content-ops-benchmark
+      snippet: Structured review loops improve readability and engagement.
+    - title: Citation-backed content trust study
+      url: https://example.com/citation-trust-study
+      snippet: Citation hygiene improves trust in professional content.
+  stubbed_node_outputs:
+    strategist:
+      topic: AI content marketing workflows
+      audience: B2B marketing leads
+      objective: Educate and engage
+      channel: linkedin
+      angle: Operational consistency creates better content outcomes
+      outline:
+        - Name the consistency challenge.
+        - Explain why workflow discipline matters.
+        - Show a practical operating model.
+        - Connect the model to publishing quality.
+        - Invite the audience to compare their process.
+      cta: Book a short strategy call today.
+    writer:
+      channel: linkedin
+      headline: Operational workflows improve B2B content consistency
+      body: |
+        Most teams do not need more ideas.
+
+        They need a repeatable process for research, drafting, and revision.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/marketingops-workflow-report
+          supporting_claim: Repeatable workflows improve consistency.
+          source_title: MarketingOps report on workflow consistency
+expectations:
+  max_iterations: 1
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true
+

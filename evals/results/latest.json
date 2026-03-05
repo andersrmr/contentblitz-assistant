@@ -1,0 +1,34 @@
+{
+  "suite": "golden",
+  "generated_at": "2026-03-05T05:26:26.769292+00:00",
+  "golden_set_version": "v1.0.0",
+  "aggregate": {
+    "quality_pass_rate": 1.0,
+    "rewrite_convergence_rate": 1.0,
+    "avg_rewrite_count": 0.0,
+    "headline_compliance_rate": 1.0,
+    "cta_presence_rate": 1.0,
+    "skim_format_rate": 1.0,
+    "citation_precision": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "case_001_create_happy_path",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_001_create_happy_path.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "quality_pass": true,
+        "rewrite_converged": true,
+        "rewrite_count": 0,
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 0
+    }
+  ]
+}

@@ -120,6 +120,16 @@ uv run pytest -q
 
 The default suite is designed to run offline. External API calls are mocked in unit tests.
 
+## Running Evals
+
+Run the deterministic offline eval harness against the golden suite:
+
+```bash
+uv run python -m evals.harness --suite golden --fail-on-threshold
+```
+
+By default this writes reports to `evals/results/latest.json` and `evals/results/latest.md`.
+
 ## Running the Streamlit UI
 
 Launch the local UI with:
