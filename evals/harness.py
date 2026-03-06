@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from evals.loader import list_case_paths, load_case
-from evals.metrics import compute_aggregate, compute_case_metrics, evaluate_expectations
+from evals.metrics import MetricValue, compute_aggregate, compute_case_metrics, evaluate_expectations
 from evals.report import write_json_report, write_markdown_report
 from evals.schema import EvalCase
 
@@ -22,6 +22,7 @@ if str(SRC) not in sys.path:
 
 from app.config import settings
 from app.prompts import RESEARCH_SYSTEM, REWRITE_SYSTEM, STRATEGIST_SYSTEM, WRITER_SYSTEM
+from app.state import AppState
 from integrations.llm_openai import OpenAIClient
 from integrations.serp import SerpClient
 from workflow.graph import content_marketing_graph
@@ -102,7 +103,7 @@ def _default_stub_payload(case: EvalCase, node_name: str) -> dict[str, Any]:
     return {}
 
 
-def _build_revise_seed_state(case: EvalCase) -> dict[str, Any]:
+def _build_revise_seed_state(case: EvalCase) -> AppState:
     citation_url = _first_fixture_url(case)
     cta = "Book a short strategy call today."
     topic = case.inputs.user_query or case.inputs.topic or "AI content marketing"
@@ -198,8 +199,8 @@ def _patched_integrations(case: EvalCase):
         OpenAIClient.complete_json = original_complete_json
 
 
-def _build_initial_state(case: EvalCase) -> dict[str, Any]:
-    initial_state: dict[str, Any] = {
+def _build_initial_state(case: EvalCase) -> AppState:
+    initial_state: AppState = {
         "intent": case.inputs.intent,
         "topic": case.inputs.topic or case.inputs.user_query or "",
         "user_query": case.inputs.user_query or case.inputs.topic or "",
@@ -237,7 +238,7 @@ def run_case(case: EvalCase, case_file: Path) -> dict[str, Any]:
 def run_suite(suite: str, outdir: Path, fail_on_threshold: bool = False) -> dict[str, Any]:
     case_paths, manifest = list_case_paths(suite)
     case_results: list[dict[str, Any]] = []
-    metric_rows: list[dict[str, float | int | bool]] = []
+    metric_rows: list[dict[str, MetricValue]] = []
 
     for case_path in case_paths:
         case = load_case(case_path)

@@ -5,8 +5,9 @@ from typing import Any
 
 from evals.schema import EvalCaseExpectations
 
+MetricValue = float | int | bool | str
 
-def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> dict[str, float | int | bool]:
+def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> dict[str, MetricValue]:
     draft_data = final_state.get("draft")
     research_data = final_state.get("research")
     report_data = final_state.get("quality_report")
@@ -55,9 +56,7 @@ def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> di
     }
 
 
-def evaluate_expectations(
-    metrics: dict[str, float | int | bool], expectations: EvalCaseExpectations
-) -> list[str]:
+def evaluate_expectations(metrics: dict[str, MetricValue], expectations: EvalCaseExpectations) -> list[str]:
     failures: list[str] = []
 
     rewrite_count = int(metrics["rewrite_count"])
@@ -86,7 +85,7 @@ def evaluate_expectations(
     return failures
 
 
-def compute_aggregate(case_metrics: list[dict[str, float | int | bool]]) -> dict[str, float]:
+def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, float]:
     if not case_metrics:
         return {
             "quality_pass_rate": 0.0,
