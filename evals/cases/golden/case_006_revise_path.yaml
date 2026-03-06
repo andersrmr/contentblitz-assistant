@@ -1,0 +1,46 @@
+case_id: case_006_revise_path
+description: Revise intent should route to rewrite path and pass deterministic quality checks.
+inputs:
+  intent: revise
+  topic: ai voice and style consistency
+  user_query: ai voice and style consistency
+  audience: Brand marketing leaders
+  platform: linkedin
+  revision_request: Keep the humor, add emoticons
+  constraints:
+    max_words: 130
+fixtures:
+  serp_fixture:
+    - title: Brand voice consistency report
+      url: https://example.com/brand-voice-consistency-report
+      snippet: Consistent brand voice improves trust and recall.
+    - title: Revision strategy guide
+      url: https://example.com/revision-strategy-guide
+      snippet: Structured revision requests improve output precision.
+    - title: LinkedIn tone adaptation
+      url: https://example.com/linkedin-tone-adaptation
+      snippet: Audience-aware tone shifts can improve engagement.
+  stubbed_node_outputs:
+    rewrite:
+      channel: linkedin
+      headline: Humor plus clarity improves brand voice consistency
+      body: |
+        Your team can keep a playful tone without losing message discipline :)
+
+        A clear revision workflow preserves humor while tightening structure.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/brand-voice-consistency-report
+          supporting_claim: Consistent voice improves trust and recall.
+          source_title: Brand voice consistency report
+expectations:
+  max_iterations: 2
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true
+  expected_route: revise
+  min_rewrite_count: 1
+

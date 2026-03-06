@@ -1,0 +1,43 @@
+case_id: case_005_headline_recovery
+description: Overlong headline is corrected via rewrite path and final headline satisfies 12-word limit.
+inputs:
+  intent: create
+  topic: practical ai content quality controls
+  user_query: practical ai content quality controls
+  audience: Content strategists
+  platform: linkedin
+  constraints:
+    max_words: 120
+fixtures:
+  serp_fixture:
+    - title: Quality controls for AI content
+      url: https://example.com/quality-controls-ai-content
+      snippet: Consistent quality checks reduce publication risk.
+    - title: Editorial compliance operations
+      url: https://example.com/editorial-compliance-operations
+      snippet: Governance checks align content with brand and legal standards.
+    - title: Review loop performance
+      url: https://example.com/review-loop-performance
+      snippet: Measurable review loops improve publish confidence.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: This extremely long headline intentionally exceeds twelve words to test recovery behavior
+      body: |
+        Quality systems are easier to operate when checks are explicit.
+
+        Teams publish faster when review criteria are measurable.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/quality-controls-ai-content
+          supporting_claim: Explicit checks reduce publication risk.
+          source_title: Quality controls for AI content
+expectations:
+  max_iterations: 2
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true
+

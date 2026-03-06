@@ -1,0 +1,38 @@
+case_id: case_004_skim_recovery
+description: Dense writer output is recovered into skimmable LinkedIn paragraphs through rewrite behavior.
+inputs:
+  intent: create
+  topic: improving linkedin readability with ai workflows
+  user_query: improving linkedin readability with ai workflows
+  audience: Growth marketers
+  platform: linkedin
+  constraints:
+    max_words: 125
+fixtures:
+  serp_fixture:
+    - title: LinkedIn readability guide
+      url: https://example.com/linkedin-readability-guide
+      snippet: Short paragraphs improve completion and engagement rates.
+    - title: Skimmable writing patterns
+      url: https://example.com/skimmable-writing-patterns
+      snippet: Visual spacing increases retention for professional readers.
+    - title: Format-first messaging
+      url: https://example.com/format-first-messaging
+      snippet: Dense posts underperform compared to clear segmented structure.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: Better formatting improves linkedin performance
+      body: This is a dense paragraph that does not include blank line separation and is intentionally formatted as a single block to trigger skim recovery behavior while still ending with a call to action Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/linkedin-readability-guide
+          supporting_claim: Segmented formatting improves completion rates.
+          source_title: LinkedIn readability guide
+expectations:
+  max_iterations: 2
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true
+

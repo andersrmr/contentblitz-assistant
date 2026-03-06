@@ -1,0 +1,46 @@
+case_id: case_002_citation_filtering
+description: Writer includes an out-of-research citation and deterministic filtering keeps citation precision at 1.0.
+inputs:
+  intent: create
+  topic: AI content governance in B2B teams
+  user_query: AI content governance in B2B teams
+  audience: B2B content operations managers
+  platform: linkedin
+  constraints:
+    max_words: 140
+fixtures:
+  serp_fixture:
+    - title: B2B governance report
+      url: https://example.com/b2b-governance-report
+      snippet: Governance workflows improve consistency and brand trust.
+    - title: Content quality benchmark
+      url: https://example.com/content-quality-benchmark
+      snippet: Teams with clear review gates have fewer quality regressions.
+    - title: Editorial standards guide
+      url: https://example.com/editorial-standards-guide
+      snippet: Style constraints improve readability and confidence.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: Governance keeps AI content reliable
+      body: |
+        AI output quality depends on disciplined editorial systems.
+
+        Strong governance means claims are easier to verify and reuse.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/b2b-governance-report
+          supporting_claim: Governance improves consistency and trust.
+          source_title: B2B governance report
+        - url: https://not-in-research.example.com/untrusted-citation
+          supporting_claim: Untrusted external claim.
+          source_title: Unknown external source
+expectations:
+  max_iterations: 1
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true
+

@@ -14,8 +14,8 @@ def test_harness_runs_golden_suite_and_writes_reports(tmp_path):
     payload = run_suite(suite="golden", outdir=outdir, fail_on_threshold=True)
 
     assert payload["suite"] == "golden"
-    assert payload["golden_set_version"] == "v1.0.0"
-    assert len(payload["cases"]) >= 1
+    assert payload["golden_set_version"] == "v1.1.0"
+    assert len(payload["cases"]) >= 6
     assert all(case["passed"] for case in payload["cases"])
 
     json_path = outdir / "latest.json"
@@ -25,5 +25,4 @@ def test_harness_runs_golden_suite_and_writes_reports(tmp_path):
 
     parsed = json.loads(json_path.read_text(encoding="utf-8"))
     assert parsed["suite"] == "golden"
-    assert parsed["golden_set_version"] == "v1.0.0"
-
+    assert parsed["golden_set_version"] == "v1.1.0"

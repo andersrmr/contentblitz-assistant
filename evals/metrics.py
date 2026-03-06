@@ -46,6 +46,7 @@ def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> di
         "quality_pass": quality_pass,
         "rewrite_converged": rewrite_converged,
         "rewrite_count": rewrite_count,
+        "route": str(final_state.get("route", "")),
         "headline_compliant": headline_compliant,
         "cta_present": cta_present,
         "skim_format": skim_format,
@@ -63,6 +64,14 @@ def evaluate_expectations(
     if rewrite_count > expectations.max_iterations:
         failures.append(
             f"rewrite_count {rewrite_count} exceeded max_iterations {expectations.max_iterations}"
+        )
+    if rewrite_count < expectations.min_rewrite_count:
+        failures.append(
+            f"rewrite_count {rewrite_count} was below min_rewrite_count {expectations.min_rewrite_count}"
+        )
+    if expectations.expected_route and str(metrics.get("route", "")) != expectations.expected_route:
+        failures.append(
+            f"route invariant failed: expected {expectations.expected_route}, got {metrics.get('route', '')}"
         )
 
     if expectations.require_citation_precision and not bool(metrics["citation_subset"]):

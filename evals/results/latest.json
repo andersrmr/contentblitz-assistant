@@ -1,11 +1,11 @@
 {
   "suite": "golden",
-  "generated_at": "2026-03-05T05:26:26.769292+00:00",
-  "golden_set_version": "v1.0.0",
+  "generated_at": "2026-03-06T03:00:34.231451+00:00",
+  "golden_set_version": "v1.1.0",
   "aggregate": {
     "quality_pass_rate": 1.0,
     "rewrite_convergence_rate": 1.0,
-    "avg_rewrite_count": 0.0,
+    "avg_rewrite_count": 0.5,
     "headline_compliance_rate": 1.0,
     "cta_presence_rate": 1.0,
     "skim_format_rate": 1.0,
@@ -21,6 +21,7 @@
         "quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 0,
+        "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
         "skim_format": true,
@@ -29,6 +30,101 @@
       },
       "quality_status": "pass",
       "rewrite_count": 0
+    },
+    {
+      "case_id": "case_002_citation_filtering",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_002_citation_filtering.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "quality_pass": true,
+        "rewrite_converged": true,
+        "rewrite_count": 0,
+        "route": "linkedin_post",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 0
+    },
+    {
+      "case_id": "case_003_cta_recovery",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_003_cta_recovery.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "quality_pass": true,
+        "rewrite_converged": true,
+        "rewrite_count": 1,
+        "route": "linkedin_post",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 1
+    },
+    {
+      "case_id": "case_004_skim_recovery",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_004_skim_recovery.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "quality_pass": true,
+        "rewrite_converged": true,
+        "rewrite_count": 1,
+        "route": "linkedin_post",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 1
+    },
+    {
+      "case_id": "case_005_headline_recovery",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_005_headline_recovery.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "quality_pass": true,
+        "rewrite_converged": true,
+        "rewrite_count": 0,
+        "route": "linkedin_post",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 0
+    },
+    {
+      "case_id": "case_006_revise_path",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_006_revise_path.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "quality_pass": true,
+        "rewrite_converged": true,
+        "rewrite_count": 1,
+        "route": "revise",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 1
     }
   ]
 }

@@ -38,6 +38,8 @@ class EvalCaseExpectations(BaseModel):
     require_headline_compliance: bool = True
     require_cta_presence: bool = True
     require_skim_format: bool = True
+    expected_route: str | None = None
+    min_rewrite_count: int = 0
 
 
 class EvalCase(BaseModel):
@@ -52,4 +54,3 @@ class GoldenManifest(BaseModel):
     golden_set_version: str
     description: str
     cases: list[str]
-

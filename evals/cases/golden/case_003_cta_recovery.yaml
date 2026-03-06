@@ -1,0 +1,43 @@
+case_id: case_003_cta_recovery
+description: Initial writer draft omits CTA and rewrite path restores CTA presence.
+inputs:
+  intent: create
+  topic: AI editorial workflows for marketing teams
+  user_query: AI editorial workflows for marketing teams
+  audience: Demand generation leaders
+  platform: linkedin
+  constraints:
+    max_words: 130
+fixtures:
+  serp_fixture:
+    - title: Editorial workflow maturity
+      url: https://example.com/editorial-workflow-maturity
+      snippet: Process maturity reduces cycle time and revision churn.
+    - title: Review loop effectiveness
+      url: https://example.com/review-loop-effectiveness
+      snippet: Targeted revisions improve clarity and conversion.
+    - title: B2B messaging consistency
+      url: https://example.com/b2b-messaging-consistency
+      snippet: Reusable narrative frameworks improve campaign cohesion.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: Editorial systems make AI content production dependable
+      body: |
+        Most teams run into bottlenecks when quality checks are ad hoc.
+
+        A repeatable editorial workflow removes ambiguity and accelerates approval.
+
+        Teams can publish with stronger confidence when expectations are clear.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/editorial-workflow-maturity
+          supporting_claim: Repeatable workflows reduce revision churn.
+          source_title: Editorial workflow maturity
+expectations:
+  max_iterations: 2
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true
+

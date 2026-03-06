@@ -106,11 +106,17 @@ def _build_revise_seed_state(case: EvalCase) -> dict[str, Any]:
     citation_url = _first_fixture_url(case)
     cta = "Book a short strategy call today."
     topic = case.inputs.user_query or case.inputs.topic or "AI content marketing"
+    sources = []
+    for item in case.fixtures.serp_fixture[:3]:
+        source = item.model_dump()
+        source["retrieved_at"] = datetime.now(timezone.utc).isoformat()
+        source["source_type"] = "serp"
+        sources.append(source)
     return {
         "research": {
             "user_query": topic,
             "search_queries": [topic],
-            "sources": [item.model_dump() for item in case.fixtures.serp_fixture[:3]],
+            "sources": sources,
             "key_findings": ["A baseline finding."],
             "angles": ["A practical angle."],
             "stats_or_quotes": [],
@@ -297,4 +303,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
