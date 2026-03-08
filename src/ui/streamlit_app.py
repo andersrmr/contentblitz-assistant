@@ -128,6 +128,20 @@ def run() -> None:
         df = df.rename(columns={"index": "category"})
         st.dataframe(df, use_container_width=True)
 
+    st.subheader("First-Pass Failure Reasons")
+    reason_counts = agg.get("first_pass_failure_reason_counts", {})
+    if isinstance(reason_counts, dict) and reason_counts:
+        df_reasons = (
+            pd.DataFrame(
+                [{"reason": k, "count": v} for k, v in reason_counts.items()]
+            )
+            .sort_values("count", ascending=False)
+            .reset_index(drop=True)
+        )
+        st.dataframe(df_reasons, use_container_width=True)
+    else:
+        st.caption("No first-pass failure reasons recorded.")
+
     st.subheader("Per-Case Results")
     cases = results.get("cases", [])
     if isinstance(cases, list) and cases:
