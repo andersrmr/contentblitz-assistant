@@ -8,6 +8,25 @@ from evals.schema import EvalCaseExpectations
 
 MetricValue = float | int | bool | str | list[str]
 
+
+def _metric_as_int(value: MetricValue, default: int = 0) -> int:
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            return default
+    return default
+
+
+def _metric_as_reason_list(value: MetricValue) -> list[str]:
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, str)]
+    return []
+
 def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> dict[str, MetricValue]:
     draft_data = final_state.get("draft")
     research_data = final_state.get("research")
@@ -77,7 +96,7 @@ def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> di
 def evaluate_expectations(metrics: dict[str, MetricValue], expectations: EvalCaseExpectations) -> list[str]:
     failures: list[str] = []
 
-    rewrite_count = int(metrics["rewrite_count"])
+    rewrite_count = _metric_as_int(metrics["rewrite_count"])
     if rewrite_count > expectations.max_iterations:
         failures.append(
             f"rewrite_count {rewrite_count} exceeded max_iterations {expectations.max_iterations}"
@@ -122,9 +141,7 @@ def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, A
     rewritten_cases = [item for item in case_metrics if bool(item["rewrite_triggered"])]
     failure_reason_counts: Counter[str] = Counter()
     for item in case_metrics:
-        failure_reason_counts.update(
-            str(reason) for reason in item.get("first_failure_reasons", []) if isinstance(reason, str)
-        )
+        failure_reason_counts.update(_metric_as_reason_list(item.get("first_failure_reasons", [])))
 
     category_groups: dict[str, list[dict[str, MetricValue]]] = {}
     for item in case_metrics:
@@ -156,7 +173,7 @@ def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, A
             if rewritten_cases
             else 0.0
         ),
-        "avg_rewrite_count": mean(float(item["rewrite_count"]) for item in case_metrics),
+        "avg_rewrite_count": mean(float(_metric_as_int(item["rewrite_count"])) for item in case_metrics),
         "first_pass_failure_reason_counts": dict(failure_reason_counts),
         "by_category": by_category,
     }
