@@ -1,7 +1,9 @@
 from pathlib import Path
+import json
 import sys
 from typing import Any, cast
 
+import pandas as pd
 import streamlit as st
 
 SRC_ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +30,14 @@ def _render_result(result: dict[str, Any]) -> None:
     with tabs[3]:
         # your graph currently returns quality_report (and maybe quality too)
         st.json(result.get("quality", result.get("quality_report", {})))
+
+
+def _load_eval_results() -> dict[str, Any] | None:
+    path = Path("evals/results/latest.json")
+    if not path.exists():
+        return None
+    with open(path, encoding="utf-8") as f:
+        return cast(dict[str, Any], json.load(f))
 
 
 def run() -> None:
@@ -94,6 +104,53 @@ def run() -> None:
         st.divider()
         st.caption("Last run output")
         _render_result(st.session_state.last_state)
+
+    st.divider()
+    st.header("Eval Results")
+
+    results = _load_eval_results()
+    if not results:
+        st.info("No eval results found. Run the eval harness first.")
+        return
+
+    agg = cast(dict[str, Any], results.get("aggregate", {}))
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Final Pass Rate", f"{float(agg.get('final_pass_rate', 0.0)):.2%}")
+    col2.metric("First-Pass Pass Rate", f"{float(agg.get('first_pass_pass_rate', 0.0)):.2%}")
+    col3.metric("Rewrite Trigger Rate", f"{float(agg.get('rewrite_trigger_rate', 0.0)):.2%}")
+    col4.metric("Rewrite Recovery Rate", f"{float(agg.get('rewrite_recovery_rate', 0.0)):.2%}")
+    col5.metric("Avg Rewrite Count", f"{float(agg.get('avg_rewrite_count', 0.0)):.2f}")
+
+    st.subheader("Metrics by Category")
+    by_cat = agg.get("by_category", {})
+    if isinstance(by_cat, dict) and by_cat:
+        df = pd.DataFrame(by_cat).T.reset_index()
+        df = df.rename(columns={"index": "category"})
+        st.dataframe(df, use_container_width=True)
+
+    st.subheader("Per-Case Results")
+    cases = results.get("cases", [])
+    if isinstance(cases, list) and cases:
+        df_cases = pd.DataFrame(cases)
+        columns = [
+            "category",
+            "case_id",
+            "passed",
+            "rewrite_count",
+            "quality_status",
+        ]
+        visible_cols = [c for c in columns if c in df_cases.columns]
+        st.dataframe(df_cases[visible_cols], use_container_width=True)
+
+        case_ids = [str(c.get("case_id", "")) for c in cases if isinstance(c, dict) and c.get("case_id")]
+        selected = st.selectbox("Inspect Case", case_ids)
+        if selected:
+            case = next(
+                (c for c in cases if isinstance(c, dict) and str(c.get("case_id", "")) == selected),
+                None,
+            )
+            if case is not None:
+                st.json(case)
 
 
 if __name__ == "__main__":
