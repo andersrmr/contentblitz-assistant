@@ -116,6 +116,7 @@ def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, A
             "rewrite_recovery_rate": 0.0,
             "avg_rewrite_count": 0.0,
             "first_pass_failure_reason_counts": {},
+            "by_category": {},
         }
 
     rewritten_cases = [item for item in case_metrics if bool(item["rewrite_triggered"])]
@@ -124,6 +125,25 @@ def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, A
         failure_reason_counts.update(
             str(reason) for reason in item.get("first_failure_reasons", []) if isinstance(reason, str)
         )
+
+    category_groups: dict[str, list[dict[str, MetricValue]]] = {}
+    for item in case_metrics:
+        category = str(item.get("category") or "uncategorized")
+        category_groups.setdefault(category, []).append(item)
+
+    by_category: dict[str, dict[str, float]] = {}
+    for category, rows in category_groups.items():
+        rewritten_rows = [row for row in rows if bool(row["rewrite_triggered"])]
+        by_category[category] = {
+            "final_pass_rate": mean(1.0 if bool(row["final_quality_pass"]) else 0.0 for row in rows),
+            "first_pass_pass_rate": mean(1.0 if bool(row["first_quality_pass"]) else 0.0 for row in rows),
+            "rewrite_trigger_rate": mean(1.0 if bool(row["rewrite_triggered"]) else 0.0 for row in rows),
+            "rewrite_recovery_rate": (
+                mean(1.0 if bool(row["rewrite_recovered"]) else 0.0 for row in rewritten_rows)
+                if rewritten_rows
+                else 0.0
+            ),
+        }
 
     return {
         "final_pass_rate": mean(
@@ -138,4 +158,5 @@ def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, A
         ),
         "avg_rewrite_count": mean(float(item["rewrite_count"]) for item in case_metrics),
         "first_pass_failure_reason_counts": dict(failure_reason_counts),
+        "by_category": by_category,
     }

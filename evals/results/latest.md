@@ -13,6 +13,18 @@
 - avg_rewrite_count: `0.667`
 - first_pass_failure_reason_counts: `{'CTA is missing from the draft body.': 1, 'Draft is not skimmable enough for LinkedIn.': 1, 'Draft tone is too promotional for professional B2B LinkedIn content.': 1, 'Draft voice does not match a credible enterprise B2B brand voice.': 1, 'Draft is too generic and lacks concrete operational insight.': 1}`
 
+## Metrics by Category
+
+| Category | Final Pass | First-Pass Pass | Rewrite Trigger | Rewrite Recovery |
+|---|---:|---:|---:|---:|
+| brand_voice | 1.000 | 0.000 | 1.000 | 1.000 |
+| citation | 1.000 | 1.000 | 0.000 | 0.000 |
+| formatting | 1.000 | 0.333 | 0.667 | 1.000 |
+| happy_path | 1.000 | 1.000 | 0.000 | 0.000 |
+| rewrite_flow | 1.000 | 1.000 | 1.000 | 0.000 |
+| specificity | 1.000 | 0.000 | 1.000 | 1.000 |
+| tone | 1.000 | 0.000 | 1.000 | 1.000 |
+
 ## Case Results
 
 | Category | Case | Status | Quality | Rewrites | Notes |

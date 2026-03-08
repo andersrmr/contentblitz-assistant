@@ -45,6 +45,25 @@ def write_markdown_report(payload: dict[str, Any], outdir: Path) -> Path:
             f"- avg_rewrite_count: `{_format_metric(aggregate['avg_rewrite_count'])}`",
             f"- first_pass_failure_reason_counts: `{aggregate['first_pass_failure_reason_counts']}`",
             "",
+            "## Metrics by Category",
+            "",
+            "| Category | Final Pass | First-Pass Pass | Rewrite Trigger | Rewrite Recovery |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
+    by_category = aggregate.get("by_category", {})
+    for category in sorted(by_category):
+        row = by_category[category]
+        lines.append(
+            f"| {category} | "
+            f"{_format_metric(float(row['final_pass_rate']))} | "
+            f"{_format_metric(float(row['first_pass_pass_rate']))} | "
+            f"{_format_metric(float(row['rewrite_trigger_rate']))} | "
+            f"{_format_metric(float(row['rewrite_recovery_rate']))} |"
+        )
+    lines.extend(
+        [
+            "",
             "## Case Results",
             "",
             "| Category | Case | Status | Quality | Rewrites | Notes |",

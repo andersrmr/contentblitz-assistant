@@ -237,15 +237,20 @@ def run_case(case: EvalCase, case_file: Path) -> dict[str, Any]:
 def run_suite(suite: str, outdir: Path, fail_on_threshold: bool = False) -> dict[str, Any]:
     case_paths, manifest = list_case_paths(suite)
     case_results: list[dict[str, Any]] = []
-    metric_rows: list[dict[str, MetricValue]] = []
+    aggregate_rows: list[dict[str, MetricValue]] = []
 
     for case_path in case_paths:
         case = load_case(case_path)
         result = run_case(case, case_path)
         case_results.append(result)
-        metric_rows.append(result["metrics"])
+        aggregate_rows.append(
+            {
+                **result["metrics"],
+                "category": str(result.get("category") or "uncategorized"),
+            }
+        )
 
-    aggregate = compute_aggregate(metric_rows)
+    aggregate = compute_aggregate(aggregate_rows)
     run_payload = {
         "suite": suite,
         "generated_at": datetime.now(timezone.utc).isoformat(),
