@@ -69,7 +69,7 @@
     - expected_route: revise
     - min_rewrite_count: 1
 
-3. Full recovery case (better eval, cases 3, 4, 5)
+3. Full recovery case (better eval, cases 3-5*, 7-9)
 
     Prove:
 
@@ -96,6 +96,8 @@
 
     > AI governance helps B2B teams make generated content more reusable, reviewable, and trustworthy.  Teams with documented review workflows reduce quality drift and improve consistency.  Worth asking: where does governance sit in your current content process?
 
+### Using Golden Cases
 
+### Next Steps to Production
 
 
