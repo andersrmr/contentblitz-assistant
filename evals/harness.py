@@ -234,8 +234,24 @@ def run_case(case: EvalCase, case_file: Path) -> dict[str, Any]:
     }
 
 
-def run_suite(suite: str, outdir: Path, fail_on_threshold: bool = False) -> dict[str, Any]:
+def run_suite(
+    suite: str,
+    outdir: Path,
+    fail_on_threshold: bool = False,
+    case_id: str | None = None,
+) -> dict[str, Any]:
     case_paths, manifest = list_case_paths(suite)
+    if case_id:
+        matched_case_paths: list[Path] = []
+        for case_path in case_paths:
+            case = load_case(case_path)
+            if case.case_id == case_id:
+                matched_case_paths.append(case_path)
+                break
+        if not matched_case_paths:
+            raise RuntimeError(f"Eval case '{case_id}' not found in suite '{suite}'.")
+        case_paths = matched_case_paths
+
     case_results: list[dict[str, Any]] = []
     aggregate_rows: list[dict[str, MetricValue]] = []
 
@@ -274,6 +290,7 @@ def run_suite(suite: str, outdir: Path, fail_on_threshold: bool = False) -> dict
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run deterministic offline eval suites.")
     parser.add_argument("--suite", choices=["golden", "challenge"], required=True)
+    parser.add_argument("--case", required=False)
     parser.add_argument("--outdir", default="evals/results")
     parser.add_argument("--fail-on-threshold", action="store_true")
     return parser.parse_args(argv)
@@ -287,6 +304,7 @@ def main(argv: list[str] | None = None) -> int:
             suite=args.suite,
             outdir=outdir,
             fail_on_threshold=args.fail_on_threshold,
+            case_id=args.case,
         )
     except RuntimeError as exc:
         print(str(exc))

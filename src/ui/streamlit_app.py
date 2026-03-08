@@ -45,126 +45,130 @@ def run() -> None:
     st.title("AI Content Marketing Assistant")
     _init_session()
 
-    # Inputs
-    topic = st.text_input("Topic", value="AI content marketing")
-    audience = st.text_input("Audience", value="B2B marketers")
-    revision_request = st.text_area(
-        "Revision request (for revising an existing draft)",
-        value="",
-        placeholder="e.g., Make it shorter, more technical, stronger hook and CTA...",
-    )
+    tabs = st.tabs(["Generate Content", "Eval Results"])
 
-    col1, col2 = st.columns(2)
+    with tabs[0]:
+        st.caption("Run the live content workflow on an ad hoc input.")
 
-    run_new = col1.button("Run new draft", type="primary")
-    revise = col2.button("Revise last draft", type="secondary")
+        # Inputs
+        topic = st.text_input("Topic", value="AI content marketing")
+        audience = st.text_input("Audience", value="B2B marketers")
+        revision_request = st.text_area(
+            "Revision request (for revising an existing draft)",
+            value="",
+            placeholder="e.g., Make it shorter, more technical, stronger hook and CTA...",
+        )
 
-    # CREATE: start fresh for this run (don’t carry last draft unless you want to)
-    if run_new:
-        state: AppState = {
-            "topic": topic,
-            "audience": audience,
-            "intent": "create",
-            "revision_request": "",
-            "rewrite_count": 0,
-            "errors": [],
-            "meta": {},
-        }
-        result = content_marketing_graph.invoke(cast(AppState, state))
-        st.session_state.last_state = result
-        _render_result(result)
+        col1, col2 = st.columns(2)
+        run_new = col1.button("Run new draft", type="primary")
+        revise = col2.button("Revise last draft", type="secondary")
 
-    # REVISE: requires last_state with a draft; carry it forward
-    if revise:
-        prev = st.session_state.last_state
-        if not prev or not prev.get("draft"):
-            st.error("No existing draft found to revise. Click 'Run new draft' first.")
-            return
-
-        # Carry forward prior artifacts so rewrite has context
-        state = cast(
-            AppState,
-            {
-                **dict(cast(dict[str, Any], prev)),
+        # CREATE: start fresh for this run (don’t carry last draft unless you want to)
+        if run_new:
+            state: AppState = {
                 "topic": topic,
                 "audience": audience,
-                "intent": "revise",
-                "revision_request": revision_request.strip()
-                or "Make it clearer and tighter.",
+                "intent": "create",
+                "revision_request": "",
                 "rewrite_count": 0,
-            },
-        )
+                "errors": [],
+                "meta": {},
+            }
+            result = content_marketing_graph.invoke(cast(AppState, state))
+            st.session_state.last_state = result
+            _render_result(result)
 
-        result = content_marketing_graph.invoke(cast(AppState, state))
-        st.session_state.last_state = result
-        _render_result(result)
+        # REVISE: requires last_state with a draft; carry it forward
+        if revise:
+            prev = st.session_state.last_state
+            if not prev or not prev.get("draft"):
+                st.error("No existing draft found to revise. Click 'Run new draft' first.")
+                return
 
-    # If we already have a result, show it (useful after reruns)
-    if (not run_new and not revise) and st.session_state.last_state:
-        st.divider()
-        st.caption("Last run output")
-        _render_result(st.session_state.last_state)
-
-    st.divider()
-    st.header("Eval Results")
-
-    results = _load_eval_results()
-    if not results:
-        st.info("No eval results found. Run the eval harness first.")
-        return
-
-    agg = cast(dict[str, Any], results.get("aggregate", {}))
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.metric("Final Pass Rate", f"{float(agg.get('final_pass_rate', 0.0)):.2%}")
-    col2.metric("First-Pass Pass Rate", f"{float(agg.get('first_pass_pass_rate', 0.0)):.2%}")
-    col3.metric("Rewrite Trigger Rate", f"{float(agg.get('rewrite_trigger_rate', 0.0)):.2%}")
-    col4.metric("Rewrite Recovery Rate", f"{float(agg.get('rewrite_recovery_rate', 0.0)):.2%}")
-    col5.metric("Avg Rewrite Count", f"{float(agg.get('avg_rewrite_count', 0.0)):.2f}")
-
-    st.subheader("Metrics by Category")
-    by_cat = agg.get("by_category", {})
-    if isinstance(by_cat, dict) and by_cat:
-        df = pd.DataFrame(by_cat).T.reset_index()
-        df = df.rename(columns={"index": "category"})
-        st.dataframe(df, use_container_width=True)
-
-    st.subheader("First-Pass Failure Reasons")
-    reason_counts = agg.get("first_pass_failure_reason_counts", {})
-    if isinstance(reason_counts, dict) and reason_counts:
-        df_reasons = (
-            pd.DataFrame(
-                [{"reason": k, "count": v} for k, v in reason_counts.items()]
+            # Carry forward prior artifacts so rewrite has context
+            state = cast(
+                AppState,
+                {
+                    **dict(cast(dict[str, Any], prev)),
+                    "topic": topic,
+                    "audience": audience,
+                    "intent": "revise",
+                    "revision_request": revision_request.strip()
+                    or "Make it clearer and tighter.",
+                    "rewrite_count": 0,
+                },
             )
-            .sort_values("count", ascending=False)
-            .reset_index(drop=True)
-        )
-        st.dataframe(df_reasons, use_container_width=True)
-    else:
-        st.caption("No first-pass failure reasons recorded.")
 
-    st.subheader("Per-Case Results")
-    cases = results.get("cases", [])
-    if isinstance(cases, list) and cases:
-        df_cases = pd.DataFrame(cases)
-        columns = [
-            "category",
-            "case_id",
-            "passed",
-            "rewrite_count",
-            "quality_status",
-        ]
-        visible_cols = [c for c in columns if c in df_cases.columns]
-        st.dataframe(df_cases[visible_cols], use_container_width=True)
+            result = content_marketing_graph.invoke(cast(AppState, state))
+            st.session_state.last_state = result
+            _render_result(result)
 
-        case_ids = [str(c.get("case_id", "")) for c in cases if isinstance(c, dict) and c.get("case_id")]
-        selected = st.selectbox("Inspect Case", case_ids)
-        if selected:
-            case = next(
-                (c for c in cases if isinstance(c, dict) and str(c.get("case_id", "")) == selected),
-                None,
+        # If we already have a result, show it (useful after reruns)
+        if (not run_new and not revise) and st.session_state.last_state:
+            st.divider()
+            st.caption("Last run output")
+            _render_result(st.session_state.last_state)
+
+    with tabs[1]:
+        st.caption("This tab shows the most recent saved eval harness results from evals/results/latest.json.")
+
+        results = _load_eval_results()
+        if not results:
+            st.info("No eval results found. Run the eval harness first.")
+            return
+
+        agg = cast(dict[str, Any], results.get("aggregate", {}))
+        col1, col2, col3, col4, col5 = st.columns(5)
+        col1.metric("Final Pass Rate", f"{float(agg.get('final_pass_rate', 0.0)):.2%}")
+        col2.metric("First-Pass Pass Rate", f"{float(agg.get('first_pass_pass_rate', 0.0)):.2%}")
+        col3.metric("Rewrite Trigger Rate", f"{float(agg.get('rewrite_trigger_rate', 0.0)):.2%}")
+        col4.metric("Rewrite Recovery Rate", f"{float(agg.get('rewrite_recovery_rate', 0.0)):.2%}")
+        col5.metric("Avg Rewrite Count", f"{float(agg.get('avg_rewrite_count', 0.0)):.2f}")
+
+        st.subheader("Metrics by Category")
+        by_cat = agg.get("by_category", {})
+        if isinstance(by_cat, dict) and by_cat:
+            df = pd.DataFrame(by_cat).T.reset_index()
+            df = df.rename(columns={"index": "category"})
+            st.dataframe(df, use_container_width=True)
+
+        st.subheader("First-Pass Failure Reasons")
+        reason_counts = agg.get("first_pass_failure_reason_counts", {})
+        if isinstance(reason_counts, dict) and reason_counts:
+            df_reasons = (
+                pd.DataFrame(
+                    [{"reason": k, "count": v} for k, v in reason_counts.items()]
+                )
+                .sort_values("count", ascending=False)
+                .reset_index(drop=True)
             )
-            if case is not None:
-                st.json(case)
+            st.dataframe(df_reasons, use_container_width=True)
+        else:
+            st.caption("No first-pass failure reasons recorded.")
+
+        st.subheader("Per-Case Results")
+        cases = results.get("cases", [])
+        if isinstance(cases, list) and cases:
+            df_cases = pd.DataFrame(cases)
+            columns = [
+                "category",
+                "case_id",
+                "passed",
+                "rewrite_count",
+                "quality_status",
+            ]
+            visible_cols = [c for c in columns if c in df_cases.columns]
+            st.dataframe(df_cases[visible_cols], use_container_width=True)
+
+            case_ids = [str(c.get("case_id", "")) for c in cases if isinstance(c, dict) and c.get("case_id")]
+            selected = st.selectbox("Inspect Case", case_ids)
+            if selected:
+                case = next(
+                    (c for c in cases if isinstance(c, dict) and str(c.get("case_id", "")) == selected),
+                    None,
+                )
+                if case is not None:
+                    st.json(case)
 
 
 if __name__ == "__main__":
