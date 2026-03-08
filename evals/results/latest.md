@@ -15,14 +15,14 @@
 
 ## Case Results
 
-| Case | Status | Quality | Rewrites | Notes |
-|---|---|---:|---:|---|
-| case_001_create_happy_path | PASS | 1 | 0 | - |
-| case_002_citation_filtering | PASS | 1 | 0 | - |
-| case_003_cta_recovery | PASS | 1 | 1 | - |
-| case_004_skim_recovery | PASS | 1 | 1 | - |
-| case_005_headline_recovery | PASS | 1 | 0 | - |
-| case_006_revise_path | PASS | 1 | 1 | - |
-| case_007_tone_violation_rewrite | PASS | 1 | 1 | - |
-| case_008_brand_voice_mismatch | PASS | 1 | 1 | - |
-| case_009_generic_content_detection | PASS | 1 | 1 | - |
+| Category | Case | Status | Quality | Rewrites | Notes |
+|---|---|---|---:|---:|---|
+| happy_path | case_001_create_happy_path | PASS | 1 | 0 | - |
+| citation | case_002_citation_filtering | PASS | 1 | 0 | - |
+| formatting | case_003_cta_recovery | PASS | 1 | 1 | - |
+| formatting | case_004_skim_recovery | PASS | 1 | 1 | - |
+| formatting | case_005_headline_recovery | PASS | 1 | 0 | - |
+| rewrite_flow | case_006_revise_path | PASS | 1 | 1 | - |
+| tone | case_007_tone_violation_rewrite | PASS | 1 | 1 | - |
+| brand_voice | case_008_brand_voice_mismatch | PASS | 1 | 1 | - |
+| specificity | case_009_generic_content_detection | PASS | 1 | 1 | - |

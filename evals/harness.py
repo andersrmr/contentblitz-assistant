@@ -224,6 +224,7 @@ def run_case(case: EvalCase, case_file: Path) -> dict[str, Any]:
 
     return {
         "case_id": case.case_id,
+        "category": case.category,
         "file": str(case_file),
         "passed": len(expectation_failures) == 0,
         "expectation_failures": expectation_failures,

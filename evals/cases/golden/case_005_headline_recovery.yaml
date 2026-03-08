@@ -1,4 +1,5 @@
 case_id: case_005_headline_recovery
+category: formatting
 description: Overlong headline is corrected via rewrite path and final headline satisfies 12-word limit.
 inputs:
   intent: create

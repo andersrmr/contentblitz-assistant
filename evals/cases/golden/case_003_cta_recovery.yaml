@@ -1,4 +1,5 @@
 case_id: case_003_cta_recovery
+category: formatting
 description: Initial writer draft omits CTA and rewrite path restores CTA presence.
 inputs:
   intent: create

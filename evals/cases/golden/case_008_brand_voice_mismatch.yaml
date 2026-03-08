@@ -1,4 +1,5 @@
 case_id: case_008_brand_voice_mismatch
+category: brand_voice
 description: Casual influencer-style voice is detected and corrected through rewrite.
 inputs:
   intent: create

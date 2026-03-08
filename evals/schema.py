@@ -46,6 +46,7 @@ class EvalCaseExpectations(BaseModel):
 class EvalCase(BaseModel):
     case_id: str
     description: str = ""
+    category: str | None = None
     inputs: EvalCaseInputs
     fixtures: EvalCaseFixtures
     expectations: EvalCaseExpectations = Field(default_factory=EvalCaseExpectations)

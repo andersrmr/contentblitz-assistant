@@ -1,6 +1,6 @@
 {
   "suite": "golden",
-  "generated_at": "2026-03-08T12:06:29.974172+00:00",
+  "generated_at": "2026-03-08T12:25:30.029402+00:00",
   "golden_set_version": "v1.2.0",
   "aggregate": {
     "final_pass_rate": 1.0,
@@ -19,6 +19,7 @@
   "cases": [
     {
       "case_id": "case_001_create_happy_path",
+      "category": "happy_path",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_001_create_happy_path.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -42,6 +43,7 @@
     },
     {
       "case_id": "case_002_citation_filtering",
+      "category": "citation",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_002_citation_filtering.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -65,6 +67,7 @@
     },
     {
       "case_id": "case_003_cta_recovery",
+      "category": "formatting",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_003_cta_recovery.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -90,6 +93,7 @@
     },
     {
       "case_id": "case_004_skim_recovery",
+      "category": "formatting",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_004_skim_recovery.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -115,6 +119,7 @@
     },
     {
       "case_id": "case_005_headline_recovery",
+      "category": "formatting",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_005_headline_recovery.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -138,6 +143,7 @@
     },
     {
       "case_id": "case_006_revise_path",
+      "category": "rewrite_flow",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_006_revise_path.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -161,6 +167,7 @@
     },
     {
       "case_id": "case_007_tone_violation_rewrite",
+      "category": "tone",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_007_tone_violation_rewrite.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -186,6 +193,7 @@
     },
     {
       "case_id": "case_008_brand_voice_mismatch",
+      "category": "brand_voice",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_008_brand_voice_mismatch.yaml",
       "passed": true,
       "expectation_failures": [],
@@ -211,6 +219,7 @@
     },
     {
       "case_id": "case_009_generic_content_detection",
+      "category": "specificity",
       "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_009_generic_content_detection.yaml",
       "passed": true,
       "expectation_failures": [],
