@@ -55,11 +55,10 @@ def write_markdown_report(payload: dict[str, Any], outdir: Path) -> Path:
 
     for case in cases:
         status = "PASS" if case["passed"] else "FAIL"
-        quality = "1" if case["metrics"]["quality_pass"] else "0"
+        quality = "1" if case["metrics"]["final_quality_pass"] else "0"
         rewrites = str(case["metrics"]["rewrite_count"])
         notes = "; ".join(case["expectation_failures"] or []) or "-"
         lines.append(f"| {case['case_id']} | {status} | {quality} | {rewrites} | {notes} |")
 
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return md_path
-

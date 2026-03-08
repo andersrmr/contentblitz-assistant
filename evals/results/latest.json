@@ -1,6 +1,6 @@
 {
   "suite": "golden",
-  "generated_at": "2026-03-06T03:00:34.231451+00:00",
+  "generated_at": "2026-03-08T11:37:49.814200+00:00",
   "golden_set_version": "v1.1.0",
   "aggregate": {
     "quality_pass_rate": 1.0,
@@ -18,7 +18,7 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
-        "quality_pass": true,
+        "final_quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 0,
         "route": "linkedin_post",
@@ -37,7 +37,7 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
-        "quality_pass": true,
+        "final_quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 0,
         "route": "linkedin_post",
@@ -56,7 +56,7 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
-        "quality_pass": true,
+        "final_quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 1,
         "route": "linkedin_post",
@@ -75,7 +75,7 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
-        "quality_pass": true,
+        "final_quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 1,
         "route": "linkedin_post",
@@ -94,7 +94,7 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
-        "quality_pass": true,
+        "final_quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 0,
         "route": "linkedin_post",
@@ -113,7 +113,7 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
-        "quality_pass": true,
+        "final_quality_pass": true,
         "rewrite_converged": true,
         "rewrite_count": 1,
         "route": "revise",

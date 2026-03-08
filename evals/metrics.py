@@ -13,7 +13,7 @@ def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> di
     report_data = final_state.get("quality_report")
     rewrite_count = int(final_state.get("rewrite_count", 0) or 0)
 
-    quality_pass = isinstance(report_data, dict) and report_data.get("status") == "pass"
+    final_quality_pass = isinstance(report_data, dict) and report_data.get("status") == "pass"
     checks = report_data.get("checks", {}) if isinstance(report_data, dict) else {}
     headline_compliant = bool(
         isinstance(checks, dict) and checks.get("headline_len_ok") is True
@@ -41,10 +41,10 @@ def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> di
         citation_precision = len(draft_urls & research_urls) / len(draft_urls)
 
     citation_subset = draft_urls.issubset(research_urls) if draft_urls else True
-    rewrite_converged = quality_pass and rewrite_count <= max_iterations
+    rewrite_converged = final_quality_pass and rewrite_count <= max_iterations
 
     return {
-        "quality_pass": quality_pass,
+        "final_quality_pass": final_quality_pass,
         "rewrite_converged": rewrite_converged,
         "rewrite_count": rewrite_count,
         "route": str(final_state.get("route", "")),
@@ -81,6 +81,10 @@ def evaluate_expectations(metrics: dict[str, MetricValue], expectations: EvalCas
         failures.append("CTA presence invariant failed")
     if expectations.require_skim_format and not bool(metrics["skim_format"]):
         failures.append("skim format invariant failed")
+    if expectations.require_quality_pass and not bool(metrics["final_quality_pass"]):
+        failures.append("final quality report status was not pass")
+    if not expectations.require_quality_pass and bool(metrics["final_quality_pass"]):
+        failures.append("final quality report status unexpectedly passed")
 
     return failures
 
@@ -98,7 +102,9 @@ def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, f
         }
 
     return {
-        "quality_pass_rate": mean(1.0 if bool(item["quality_pass"]) else 0.0 for item in case_metrics),
+        "quality_pass_rate": mean(
+            1.0 if bool(item["final_quality_pass"]) else 0.0 for item in case_metrics
+        ),
         "rewrite_convergence_rate": mean(
             1.0 if bool(item["rewrite_converged"]) else 0.0 for item in case_metrics
         ),

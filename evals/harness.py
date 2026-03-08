@@ -221,8 +221,6 @@ def run_case(case: EvalCase, case_file: Path) -> dict[str, Any]:
 
     metrics = compute_case_metrics(final_state=final_state, max_iterations=case.expectations.max_iterations)
     expectation_failures = evaluate_expectations(metrics=metrics, expectations=case.expectations)
-    if not bool(metrics["quality_pass"]):
-        expectation_failures.append("quality report status was not pass")
 
     return {
         "case_id": case.case_id,

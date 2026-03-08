@@ -34,6 +34,7 @@ class EvalCaseFixtures(BaseModel):
 
 class EvalCaseExpectations(BaseModel):
     max_iterations: int = 2
+    require_quality_pass: bool = True
     require_citation_precision: bool = True
     require_headline_compliance: bool = True
     require_cta_presence: bool = True
