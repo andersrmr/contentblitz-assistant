@@ -1,0 +1,59 @@
+case_id: case_009_generic_content_detection
+description: Generic low-specificity content is detected and corrected through rewrite.
+inputs:
+  intent: create
+  topic: enterprise AI marketing operating model
+  user_query: enterprise AI marketing operating model
+  audience: enterprise marketing operations leaders
+  platform: linkedin
+  constraints:
+    max_words: 140
+fixtures:
+  serp_fixture:
+    - title: Enterprise operating model benchmark
+      url: https://example.com/enterprise-operating-model-benchmark
+      snippet: Operating models with explicit controls improve delivery reliability.
+    - title: AI marketing workflow guide
+      url: https://example.com/ai-marketing-workflow-guide
+      snippet: Workflow design improves clarity and execution quality.
+    - title: Governance controls handbook
+      url: https://example.com/governance-controls-handbook
+      snippet: Governance controls reduce risk and support auditability.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: Why AI strategy matters now
+      body: |
+        AI is becoming more important for marketing teams.
+
+        Many organizations are thinking about change, and companies should consider adopting new tools.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/enterprise-operating-model-benchmark
+          supporting_claim: Explicit operating models improve delivery reliability.
+          source_title: Enterprise operating model benchmark
+    rewrite:
+      channel: linkedin
+      headline: Operational governance improves AI marketing execution
+      body: |
+        Enterprise teams should define a governance workflow that includes policy checks before campaign approval.
+
+        Adding a review step tied to risk and compliance controls improves confidence in what gets published.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/enterprise-operating-model-benchmark
+          supporting_claim: Explicit operating models improve delivery reliability.
+          source_title: Enterprise operating model benchmark
+expectations:
+  max_iterations: 2
+  expected_route: linkedin_post
+  min_rewrite_count: 1
+  require_quality_pass: true
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true

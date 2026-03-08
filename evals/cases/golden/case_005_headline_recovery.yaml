@@ -36,8 +36,8 @@ fixtures:
           source_title: Quality controls for AI content
 expectations:
   max_iterations: 2
+  require_quality_pass: true
   require_citation_precision: true
   require_headline_compliance: true
   require_cta_presence: true
   require_skim_format: true
-

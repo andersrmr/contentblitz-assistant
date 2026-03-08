@@ -37,10 +37,10 @@ fixtures:
           source_title: Brand voice consistency report
 expectations:
   max_iterations: 2
+  require_quality_pass: true
   require_citation_precision: true
   require_headline_compliance: true
   require_cta_presence: true
   require_skim_format: true
   expected_route: revise
   min_rewrite_count: 1
-

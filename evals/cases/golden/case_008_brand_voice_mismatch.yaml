@@ -1,0 +1,59 @@
+case_id: case_008_brand_voice_mismatch
+description: Casual influencer-style voice is detected and corrected through rewrite.
+inputs:
+  intent: create
+  topic: enterprise AI content governance operations
+  user_query: enterprise AI content governance operations
+  audience: enterprise content operations leaders
+  platform: linkedin
+  constraints:
+    max_words: 140
+fixtures:
+  serp_fixture:
+    - title: Governance operations maturity report
+      url: https://example.com/governance-operations-maturity-report
+      snippet: Mature governance operations improve campaign reliability.
+    - title: Enterprise review workflow design
+      url: https://example.com/enterprise-review-workflow-design
+      snippet: Review workflow design improves message quality and consistency.
+    - title: Marketing risk controls guide
+      url: https://example.com/marketing-risk-controls-guide
+      snippet: Risk controls reduce policy violations and rework.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: AI governance hacks for marketers
+      body: |
+        Move fast with these governance hacks to keep content moving.
+
+        Just experiment and worry about governance later while teams iterate.
+
+        Follow for more tips.
+      cta: Follow for more tips.
+      citations:
+        - url: https://example.com/governance-operations-maturity-report
+          supporting_claim: Governance operations improve campaign reliability.
+          source_title: Governance operations maturity report
+    rewrite:
+      channel: linkedin
+      headline: Enterprise governance improves content reliability
+      body: |
+        Enterprise teams benefit from explicit governance standards for AI-assisted content creation.
+
+        Defined review controls improve consistency and reduce policy-related rework across campaigns.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/governance-operations-maturity-report
+          supporting_claim: Governance operations improve campaign reliability.
+          source_title: Governance operations maturity report
+expectations:
+  max_iterations: 2
+  expected_route: linkedin_post
+  min_rewrite_count: 1
+  require_quality_pass: true
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true

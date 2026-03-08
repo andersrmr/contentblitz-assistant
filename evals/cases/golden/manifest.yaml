@@ -1,4 +1,4 @@
-golden_set_version: "v1.1.0"
+golden_set_version: "v1.2.0"
 description: "Expanded deterministic golden suite for offline eval regression checks."
 cases:
   - case_001_create_happy_path.yaml
@@ -7,3 +7,6 @@ cases:
   - case_004_skim_recovery.yaml
   - case_005_headline_recovery.yaml
   - case_006_revise_path.yaml
+  - case_007_tone_violation_rewrite.yaml
+  - case_008_brand_voice_mismatch.yaml
+  - case_009_generic_content_detection.yaml

@@ -1,16 +1,19 @@
 {
   "suite": "golden",
-  "generated_at": "2026-03-08T11:53:07.993669+00:00",
-  "golden_set_version": "v1.1.0",
+  "generated_at": "2026-03-08T12:06:29.974172+00:00",
+  "golden_set_version": "v1.2.0",
   "aggregate": {
     "final_pass_rate": 1.0,
-    "first_pass_pass_rate": 0.6666666666666666,
-    "rewrite_trigger_rate": 0.5,
-    "rewrite_recovery_rate": 0.6666666666666666,
-    "avg_rewrite_count": 0.5,
+    "first_pass_pass_rate": 0.4444444444444444,
+    "rewrite_trigger_rate": 0.6666666666666666,
+    "rewrite_recovery_rate": 0.8333333333333334,
+    "avg_rewrite_count": 0.6666666666666666,
     "first_pass_failure_reason_counts": {
       "CTA is missing from the draft body.": 1,
-      "Draft is not skimmable enough for LinkedIn.": 1
+      "Draft is not skimmable enough for LinkedIn.": 1,
+      "Draft tone is too promotional for professional B2B LinkedIn content.": 1,
+      "Draft voice does not match a credible enterprise B2B brand voice.": 1,
+      "Draft is too generic and lacks concrete operational insight.": 1
     }
   },
   "cases": [
@@ -147,6 +150,81 @@
         "rewrite_count": 1,
         "first_failure_reasons": [],
         "route": "revise",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 1
+    },
+    {
+      "case_id": "case_007_tone_violation_rewrite",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_007_tone_violation_rewrite.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "first_quality_pass": false,
+        "final_quality_pass": true,
+        "rewrite_triggered": true,
+        "rewrite_recovered": true,
+        "rewrite_converged": true,
+        "rewrite_count": 1,
+        "first_failure_reasons": [
+          "Draft tone is too promotional for professional B2B LinkedIn content."
+        ],
+        "route": "linkedin_post",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 1
+    },
+    {
+      "case_id": "case_008_brand_voice_mismatch",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_008_brand_voice_mismatch.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "first_quality_pass": false,
+        "final_quality_pass": true,
+        "rewrite_triggered": true,
+        "rewrite_recovered": true,
+        "rewrite_converged": true,
+        "rewrite_count": 1,
+        "first_failure_reasons": [
+          "Draft voice does not match a credible enterprise B2B brand voice."
+        ],
+        "route": "linkedin_post",
+        "headline_compliant": true,
+        "cta_present": true,
+        "skim_format": true,
+        "citation_precision": 1.0,
+        "citation_subset": true
+      },
+      "quality_status": "pass",
+      "rewrite_count": 1
+    },
+    {
+      "case_id": "case_009_generic_content_detection",
+      "file": "/home/andersrmr/git/contentblitz-assistant/evals/cases/golden/case_009_generic_content_detection.yaml",
+      "passed": true,
+      "expectation_failures": [],
+      "metrics": {
+        "first_quality_pass": false,
+        "final_quality_pass": true,
+        "rewrite_triggered": true,
+        "rewrite_recovered": true,
+        "rewrite_converged": true,
+        "rewrite_count": 1,
+        "first_failure_reasons": [
+          "Draft is too generic and lacks concrete operational insight."
+        ],
+        "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
         "skim_format": true,

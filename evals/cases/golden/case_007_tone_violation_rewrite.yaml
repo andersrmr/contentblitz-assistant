@@ -1,0 +1,59 @@
+case_id: case_007_tone_violation_rewrite
+description: Promotional tone is detected and corrected through rewrite.
+inputs:
+  intent: create
+  topic: AI governance for enterprise marketing teams
+  user_query: AI governance for enterprise marketing teams
+  audience: enterprise marketing leaders
+  platform: linkedin
+  constraints:
+    max_words: 140
+fixtures:
+  serp_fixture:
+    - title: Enterprise AI governance framework
+      url: https://example.com/enterprise-ai-governance-framework
+      snippet: Governance workflows reduce risk and improve decision confidence.
+    - title: Marketing review operations benchmark
+      url: https://example.com/marketing-review-operations-benchmark
+      snippet: Structured review gates improve campaign quality.
+    - title: B2B compliance playbook
+      url: https://example.com/b2b-compliance-playbook
+      snippet: Compliance checks improve reliability in regulated marketing environments.
+  stubbed_node_outputs:
+    writer:
+      channel: linkedin
+      headline: Your secret weapon for AI governance
+      body: |
+        This is your secret weapon for AI marketing execution.
+
+        It is the ultimate game changer, and teams are already behind the competition.
+
+        Sign up today for an executive briefing.
+      cta: Sign up today for an executive briefing.
+      citations:
+        - url: https://example.com/enterprise-ai-governance-framework
+          supporting_claim: Governance workflows reduce operational risk.
+          source_title: Enterprise AI governance framework
+    rewrite:
+      channel: linkedin
+      headline: Enterprise governance improves AI marketing reliability
+      body: |
+        Enterprise teams need structured governance to keep AI outputs reviewable and accountable.
+
+        A defined review workflow improves approval quality and reduces downstream campaign risk.
+
+        Book a short strategy call today.
+      cta: Book a short strategy call today.
+      citations:
+        - url: https://example.com/enterprise-ai-governance-framework
+          supporting_claim: Governance workflows reduce operational risk.
+          source_title: Enterprise AI governance framework
+expectations:
+  max_iterations: 2
+  expected_route: linkedin_post
+  min_rewrite_count: 1
+  require_quality_pass: true
+  require_citation_precision: true
+  require_headline_compliance: true
+  require_cta_presence: true
+  require_skim_format: true

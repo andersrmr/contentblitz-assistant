@@ -1,17 +1,17 @@
 # Eval Run Summary
 
 - Suite: `golden`
-- Golden set version: `v1.1.0`
-- Cases: `6`
+- Golden set version: `v1.2.0`
+- Cases: `9`
 
 ## Aggregate Metrics
 
 - final_pass_rate: `1.000`
-- first_pass_pass_rate: `0.667`
-- rewrite_trigger_rate: `0.500`
-- rewrite_recovery_rate: `0.667`
-- avg_rewrite_count: `0.500`
-- first_pass_failure_reason_counts: `{'CTA is missing from the draft body.': 1, 'Draft is not skimmable enough for LinkedIn.': 1}`
+- first_pass_pass_rate: `0.444`
+- rewrite_trigger_rate: `0.667`
+- rewrite_recovery_rate: `0.833`
+- avg_rewrite_count: `0.667`
+- first_pass_failure_reason_counts: `{'CTA is missing from the draft body.': 1, 'Draft is not skimmable enough for LinkedIn.': 1, 'Draft tone is too promotional for professional B2B LinkedIn content.': 1, 'Draft voice does not match a credible enterprise B2B brand voice.': 1, 'Draft is too generic and lacks concrete operational insight.': 1}`
 
 ## Case Results
 
@@ -23,3 +23,6 @@
 | case_004_skim_recovery | PASS | 1 | 1 | - |
 | case_005_headline_recovery | PASS | 1 | 0 | - |
 | case_006_revise_path | PASS | 1 | 1 | - |
+| case_007_tone_violation_rewrite | PASS | 1 | 1 | - |
+| case_008_brand_voice_mismatch | PASS | 1 | 1 | - |
+| case_009_generic_content_detection | PASS | 1 | 1 | - |
