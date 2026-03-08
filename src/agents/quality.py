@@ -70,4 +70,8 @@ def quality_node(state: AppState) -> dict:
         "checks": checks,
     }
     report = QualityReport.model_validate(report_data)
-    return {"quality_report": report.model_dump()}
+    report_dict = report.model_dump()
+    result = {"quality_report": report_dict}
+    if state.get("first_quality_report") is None:
+        result["first_quality_report"] = report_dict
+    return result

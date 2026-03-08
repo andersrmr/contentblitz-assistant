@@ -6,13 +6,12 @@
 
 ## Aggregate Metrics
 
-- quality_pass_rate: `1.000`
-- rewrite_convergence_rate: `1.000`
+- final_pass_rate: `1.000`
+- first_pass_pass_rate: `0.667`
+- rewrite_trigger_rate: `0.500`
+- rewrite_recovery_rate: `0.667`
 - avg_rewrite_count: `0.500`
-- headline_compliance_rate: `1.000`
-- cta_presence_rate: `1.000`
-- skim_format_rate: `1.000`
-- citation_precision: `1.000`
+- first_pass_failure_reason_counts: `{'CTA is missing from the draft body.': 1, 'Draft is not skimmable enough for LinkedIn.': 1}`
 
 ## Case Results
 

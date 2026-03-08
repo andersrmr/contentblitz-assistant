@@ -1,20 +1,34 @@
 from __future__ import annotations
 
+from collections import Counter
 from statistics import mean
 from typing import Any
 
 from evals.schema import EvalCaseExpectations
 
-MetricValue = float | int | bool | str
+MetricValue = float | int | bool | str | list[str]
 
 def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> dict[str, MetricValue]:
     draft_data = final_state.get("draft")
     research_data = final_state.get("research")
-    report_data = final_state.get("quality_report")
+    first_report_data = final_state.get("first_quality_report")
+    final_report_data = final_state.get("quality_report")
     rewrite_count = int(final_state.get("rewrite_count", 0) or 0)
 
-    final_quality_pass = isinstance(report_data, dict) and report_data.get("status") == "pass"
-    checks = report_data.get("checks", {}) if isinstance(report_data, dict) else {}
+    first_quality_pass = (
+        isinstance(first_report_data, dict) and first_report_data.get("status") == "pass"
+    )
+    final_quality_pass = (
+        isinstance(final_report_data, dict) and final_report_data.get("status") == "pass"
+    )
+    rewrite_triggered = rewrite_count > 0
+    rewrite_recovered = rewrite_triggered and (not first_quality_pass) and final_quality_pass
+    first_failure_reasons = (
+        list(first_report_data.get("reasons", []))
+        if isinstance(first_report_data, dict)
+        else []
+    )
+    checks = final_report_data.get("checks", {}) if isinstance(final_report_data, dict) else {}
     headline_compliant = bool(
         isinstance(checks, dict) and checks.get("headline_len_ok") is True
     )
@@ -44,9 +58,13 @@ def compute_case_metrics(final_state: dict[str, Any], max_iterations: int) -> di
     rewrite_converged = final_quality_pass and rewrite_count <= max_iterations
 
     return {
+        "first_quality_pass": first_quality_pass,
         "final_quality_pass": final_quality_pass,
+        "rewrite_triggered": rewrite_triggered,
+        "rewrite_recovered": rewrite_recovered,
         "rewrite_converged": rewrite_converged,
         "rewrite_count": rewrite_count,
+        "first_failure_reasons": first_failure_reasons,
         "route": str(final_state.get("route", "")),
         "headline_compliant": headline_compliant,
         "cta_present": cta_present,
@@ -89,30 +107,35 @@ def evaluate_expectations(metrics: dict[str, MetricValue], expectations: EvalCas
     return failures
 
 
-def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, float]:
+def compute_aggregate(case_metrics: list[dict[str, MetricValue]]) -> dict[str, Any]:
     if not case_metrics:
         return {
-            "quality_pass_rate": 0.0,
-            "rewrite_convergence_rate": 0.0,
+            "final_pass_rate": 0.0,
+            "first_pass_pass_rate": 0.0,
+            "rewrite_trigger_rate": 0.0,
+            "rewrite_recovery_rate": 0.0,
             "avg_rewrite_count": 0.0,
-            "headline_compliance_rate": 0.0,
-            "cta_presence_rate": 0.0,
-            "skim_format_rate": 0.0,
-            "citation_precision": 0.0,
+            "first_pass_failure_reason_counts": {},
         }
 
+    rewritten_cases = [item for item in case_metrics if bool(item["rewrite_triggered"])]
+    failure_reason_counts: Counter[str] = Counter()
+    for item in case_metrics:
+        failure_reason_counts.update(
+            str(reason) for reason in item.get("first_failure_reasons", []) if isinstance(reason, str)
+        )
+
     return {
-        "quality_pass_rate": mean(
+        "final_pass_rate": mean(
             1.0 if bool(item["final_quality_pass"]) else 0.0 for item in case_metrics
         ),
-        "rewrite_convergence_rate": mean(
-            1.0 if bool(item["rewrite_converged"]) else 0.0 for item in case_metrics
+        "first_pass_pass_rate": mean(1.0 if bool(item["first_quality_pass"]) else 0.0 for item in case_metrics),
+        "rewrite_trigger_rate": mean(1.0 if bool(item["rewrite_triggered"]) else 0.0 for item in case_metrics),
+        "rewrite_recovery_rate": (
+            mean(1.0 if bool(item["rewrite_recovered"]) else 0.0 for item in rewritten_cases)
+            if rewritten_cases
+            else 0.0
         ),
         "avg_rewrite_count": mean(float(item["rewrite_count"]) for item in case_metrics),
-        "headline_compliance_rate": mean(
-            1.0 if bool(item["headline_compliant"]) else 0.0 for item in case_metrics
-        ),
-        "cta_presence_rate": mean(1.0 if bool(item["cta_present"]) else 0.0 for item in case_metrics),
-        "skim_format_rate": mean(1.0 if bool(item["skim_format"]) else 0.0 for item in case_metrics),
-        "citation_precision": mean(float(item["citation_precision"]) for item in case_metrics),
+        "first_pass_failure_reason_counts": dict(failure_reason_counts),
     }

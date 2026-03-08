@@ -1,15 +1,17 @@
 {
   "suite": "golden",
-  "generated_at": "2026-03-08T11:37:49.814200+00:00",
+  "generated_at": "2026-03-08T11:47:51.162078+00:00",
   "golden_set_version": "v1.1.0",
   "aggregate": {
-    "quality_pass_rate": 1.0,
-    "rewrite_convergence_rate": 1.0,
+    "final_pass_rate": 1.0,
+    "first_pass_pass_rate": 0.6666666666666666,
+    "rewrite_trigger_rate": 0.5,
+    "rewrite_recovery_rate": 0.6666666666666666,
     "avg_rewrite_count": 0.5,
-    "headline_compliance_rate": 1.0,
-    "cta_presence_rate": 1.0,
-    "skim_format_rate": 1.0,
-    "citation_precision": 1.0
+    "first_pass_failure_reason_counts": {
+      "CTA is missing from the draft body.": 1,
+      "Draft is not skimmable enough for LinkedIn.": 1
+    }
   },
   "cases": [
     {
@@ -18,9 +20,13 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
+        "first_quality_pass": true,
         "final_quality_pass": true,
+        "rewrite_triggered": false,
+        "rewrite_recovered": false,
         "rewrite_converged": true,
         "rewrite_count": 0,
+        "first_failure_reasons": [],
         "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
@@ -37,9 +43,13 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
+        "first_quality_pass": true,
         "final_quality_pass": true,
+        "rewrite_triggered": false,
+        "rewrite_recovered": false,
         "rewrite_converged": true,
         "rewrite_count": 0,
+        "first_failure_reasons": [],
         "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
@@ -56,9 +66,15 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
+        "first_quality_pass": false,
         "final_quality_pass": true,
+        "rewrite_triggered": true,
+        "rewrite_recovered": true,
         "rewrite_converged": true,
         "rewrite_count": 1,
+        "first_failure_reasons": [
+          "CTA is missing from the draft body."
+        ],
         "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
@@ -75,9 +91,15 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
+        "first_quality_pass": false,
         "final_quality_pass": true,
+        "rewrite_triggered": true,
+        "rewrite_recovered": true,
         "rewrite_converged": true,
         "rewrite_count": 1,
+        "first_failure_reasons": [
+          "Draft is not skimmable enough for LinkedIn."
+        ],
         "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
@@ -94,9 +116,13 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
+        "first_quality_pass": true,
         "final_quality_pass": true,
+        "rewrite_triggered": false,
+        "rewrite_recovered": false,
         "rewrite_converged": true,
         "rewrite_count": 0,
+        "first_failure_reasons": [],
         "route": "linkedin_post",
         "headline_compliant": true,
         "cta_present": true,
@@ -113,9 +139,13 @@
       "passed": true,
       "expectation_failures": [],
       "metrics": {
+        "first_quality_pass": true,
         "final_quality_pass": true,
+        "rewrite_triggered": true,
+        "rewrite_recovered": false,
         "rewrite_converged": true,
         "rewrite_count": 1,
+        "first_failure_reasons": [],
         "route": "revise",
         "headline_compliant": true,
         "cta_present": true,
