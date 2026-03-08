@@ -96,8 +96,20 @@
 
     > AI governance helps B2B teams make generated content more reusable, reviewable, and trustworthy.  Teams with documented review workflows reduce quality drift and improve consistency.  Worth asking: where does governance sit in your current content process?
 
-### Using Golden Cases
+### Using Golden Cases - Ideal workflow
 
-### Next Steps to Production
+1. Isolate a failing or weak case and run that case repeatedly
+2. Iterate locally by adjusting prompts, quality rules, rewrite instructions, etc.
+3. Run the full suite and confirm no regressions
+4. Commit if metrics improved (golden metrics become acceptance gate)
 
+### Towards Production
 
+- Add full recovery tests with live LLM calls to explore broader (non-deterministic) behavior
+- Add challenge cases:
+
+    - Harder edge cases designed to expose weakness
+    - Some are expected to fail (to prove detection/guardrails work)
+    - Some are expected to pass to prove robustness under hard input
+
+- Add agents to add images and other pathways, e.g., blog
