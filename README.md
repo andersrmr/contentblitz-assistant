@@ -65,15 +65,19 @@ Workflow stages:
 ```text
 .
 ├─ src/
-│  ├─ agents/         # LangGraph node implementations
-│  ├─ app/            # config, models, prompts, typed state
-│  ├─ integrations/   # OpenAI + SerpAPI client wrappers
-│  ├─ ui/             # Streamlit application
-│  ├─ utils/          # small helper utilities
-│  └─ workflow/       # graph assembly and routing
+│  ├─ agents/         # LangGraph node implementations for router, research, strategy, writing, quality, and rewrite
+│  ├─ app/            # application config, shared models, and typed workflow state
+│  ├─ integrations/   # OpenAI Responses API and SerpAPI client wrappers
+│  ├─ ui/             # Streamlit application entrypoint
+│  ├─ utils/          # text and time helpers
+│  └─ workflow/       # graph assembly and routing helpers
+├─ evals/             # offline eval harness, metrics, schemas, and generated result reports
 ├─ tests/             # deterministic offline unit tests
+├─ docs/              # architecture and graph documentation
 ├─ plans/             # implementation milestone notes
-└─ docs/              # architecture and graph documentation
+├─ .env.example       # example environment configuration
+├─ pyproject.toml     # project metadata and dependencies
+└─ uv.lock            # locked dependency set for uv
 ```
 
 ## Setup Instructions
