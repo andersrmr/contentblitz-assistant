@@ -166,7 +166,7 @@ This repo intentionally keeps the deployed app separate from the internal/dev St
 
 ### Dependency File Note
 
-This repo currently includes `uv.lock` and `pyproject.toml`, and also includes `requirements.txt` for deployment guidance. Streamlit Community Cloud recognizes multiple dependency file types and uses the first supported file it finds. In practice, Community Cloud recognizes `uv.lock` before `requirements.txt`, so keep deployment dependency configuration intentional and avoid adding conflicting dependency files casually.
+This repo uses `pyproject.toml` and `uv.lock` as the authoritative dependency source for both local work and deployment. Streamlit Community Cloud recognizes multiple dependency file types and uses the first supported file it finds, so keep deployment dependency configuration intentional and avoid adding conflicting dependency files casually.
 
 ## Usage
 

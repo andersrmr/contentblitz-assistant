@@ -1,9 +1,0 @@
-langgraph
-openai
-pydantic
-pydantic-settings
-pyyaml
-python-dotenv
-requests
-streamlit
-pandas
