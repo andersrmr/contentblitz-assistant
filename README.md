@@ -144,6 +144,30 @@ uv run streamlit run src/ui/streamlit_app.py
 
 The app provides a simple interface for generating a new draft or revising the most recent draft.
 
+## Deploying to Streamlit Community Cloud
+
+For a first deployment:
+
+1. Push this repository to GitHub.
+2. In Streamlit Community Cloud, create a new app from the GitHub repo.
+3. Use `src/ui/streamlit_deploy_app.py` as the app entrypoint.
+4. In Advanced settings, choose Python 3.11.
+5. In the app secrets/settings UI, configure:
+   - `OPENAI_API_KEY`
+   - `SERPAPI_API_KEY`
+   - `OPENAI_MODEL` (optional)
+   - `MAX_ITERATIONS` (optional)
+   - `DEFAULT_PLATFORM` (optional)
+   - `DEFAULT_TONE` (optional)
+
+Keep `.env` out of version control. For deployment, enter secrets in Streamlit Community Cloud settings rather than storing them in the repo.
+
+This repo intentionally keeps the deployed app separate from the internal/dev Streamlit UI. Use `src/ui/streamlit_deploy_app.py` for hosting and keep `src/ui/streamlit_app.py` for local development and eval-oriented workflows.
+
+### Dependency File Note
+
+This repo currently includes `uv.lock` and `pyproject.toml`, and also includes `requirements.txt` for deployment guidance. Streamlit Community Cloud recognizes multiple dependency file types and uses the first supported file it finds. In practice, Community Cloud recognizes `uv.lock` before `requirements.txt`, so keep deployment dependency configuration intentional and avoid adding conflicting dependency files casually.
+
 ## Usage
 
 ### Create Workflow

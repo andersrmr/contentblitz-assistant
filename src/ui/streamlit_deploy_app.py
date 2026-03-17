@@ -93,6 +93,7 @@ def run() -> None:
     st.set_page_config(page_title="AI Content Marketing Assistant", layout="wide")
     st.title("AI Content Marketing Assistant")
     st.caption("Generate and revise LinkedIn-ready content using a structured AI workflow.")
+    st.caption("To run this app in production, configure secrets in your deployment environment.")
     _init_session()
 
     topic = st.text_input("Topic", value="AI content marketing")
