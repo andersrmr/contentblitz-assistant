@@ -134,15 +134,28 @@ uv run python -m evals.harness --suite golden --fail-on-threshold
 
 By default this writes reports to `evals/results/latest.json` and `evals/results/latest.md`.
 
-## Running the Streamlit UI
+## Public App
 
-Launch the local UI with:
+The deployed public app is available at:
+
+`https://contentblitz-assistant-andersrmr.streamlit.app/`
+
+This is the hosted version intended for end users. Open the link in a browser to use the app without setting up the repository locally.
+
+## Running the Streamlit UI Locally
+
+This repository includes two Streamlit entrypoints with different purposes:
+
+- `src/ui/streamlit_deploy_app.py` is the streamlined app used for the public Streamlit deployment
+- `src/ui/streamlit_app.py` is the local development UI used for internal workflows and eval-oriented iteration
+
+For local development, launch the dev UI with:
 
 ```bash
 uv run streamlit run src/ui/streamlit_app.py
 ```
 
-The app provides a simple interface for generating a new draft or revising the most recent draft.
+Use this mode when developing features, testing changes locally, or working with the richer internal create/revise workflow.
 
 ## Deploying to Streamlit Community Cloud
 
